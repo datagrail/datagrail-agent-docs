@@ -1,0 +1,41 @@
+{
+  "connections": [
+    {
+      "name": "<SET THIS>",
+      "uuid": "<SET THIS>",
+      "capabilities": [
+        "privacy/access",
+        "privacy/delete"
+      ],
+      "mode": "live",
+      "connector_type": "Snowflake",
+      "queries": {
+        "access": [
+          "<SET THIS IF NEEDED>"
+        ],
+        "delete": [
+          "<SET THIS IF NEEDED>"
+        ]
+      },
+      "credentials_location": "<credentials arn>"
+    }
+  ],
+  "customer_domain": "<customer-domain>",
+  "datagrail_agent_credentials_location": "<credentials arn>",
+  "datagrail_credentials_location": "<credentials arn>",
+  "platform": {
+    "credentials_manager": {
+      "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP>",
+      "options": {
+        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>",
+      }
+    },
+    "storage_manager": {
+      "provider": "<GCPCloudStore|AWSS3>",
+      "options": {
+        "bucket": "<bucket name, required>",
+        "optional": "some modules may have additional required fields, e.g. GCP should have project_id: <project id>"
+      }
+    }
+  }
+}
