@@ -15,7 +15,7 @@ Take a look at [connectors](../connectors) directory for what connectors are ava
 
 #### Connector Secret(s)
 
-Each connector will need specific credentials to connect to the system, please refer to the respective connector's documentation in the [installation](../installation) directory to know what fields you will need to set.
+Each connector will need specific credentials to connect to the system, please refer to the respective connector's documentation in the [installation](installation) directory to know what fields you will need to set.
 
 #### Datagrail-agent Secret
 
