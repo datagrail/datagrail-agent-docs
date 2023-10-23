@@ -1,0 +1,42 @@
+{
+  "connections": [
+      {
+          "name": "Customers",
+          "uuid": "dec3e54a-be0c-11ed-afa1-0242ac120002",
+          "capabilities": ["privacy/access", "privacy/delete"],
+          "mode": "live",
+          "connector_type": "Postgres",
+          "queries": {
+              "access": ["SELECT * FROM customers WHERE email = %(email)s"],
+              "delete": ["DELETE FROM customers WHERE email = %(email)s"]
+          },
+          "credentials_location": "arn:aws:secretsmanager:us-west-2:00123456789:secret:postgres"
+      },
+      {
+          "name": "Orders",
+          "uuid": "4d0e1ba9-f664-4e59-81ff-5c73ffe574b2",
+          "capabilities": ["privacy/access"],
+          "mode": "live",
+          "connector_type": "MySQL",
+          "queries": {
+              "access": ["SELECT * FROM orders WHERE cust_id = (SELECT cust_id FROM customers WHERE email = %(email)s)"],
+              "delete": []
+          },
+          "credentials_location": "arn:aws:secretsmanager:us-west-2:00123456789:secret:mysql"
+      }
+  ],
+  "customer_domain": "acme.datagrail.io",
+  "datagrail_agent_credentials_location": "arn:aws:secretsmanager:us-west-2:00123456789:secret:datagrail-agent",
+  "datagrail_credentials_location": "arn:aws:secretsmanager:us-west-2:00123456789:secret:datagrail",
+  "platform": {
+    "storage_manager": {
+      "provider": "AWSS3",
+      "options": {
+        "bucket": "datagrail-dev-reports"
+      }
+    },
+    "credentials_manager": {
+      "provider": "AWSSecretsManager"
+    }
+  }
+}
