@@ -15,6 +15,9 @@ Secrets for the DataGrail callback (`datagrail_credentials_location`), the DataG
 ### TLS Certificate
 The Application Load Balancer will need to have an existing TLS certificate attached. This certificate should be for the domain that you plan on using to reach the agent.
 
+### Configuration File
+The agent requires a configuration file to dictate various behavior. Upon startup, the agent performs schema validation of the file to ensure that all requirements are met, and will fail if they aren't. When first deploying the agent without connections to your internal systems, a minimum viable configuration is required to get it running. A sample of this configuration can be found in [config/datagrail-agent-config.json.sample](terraform/aws/ecs/config/datagrail-agent.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
+
 ## Agent Architecture
 ### VPC and Subnets
 Two public and one private subnet will be used in a VPC of your choice. An Application Load Balancer will live in the two public subnets and forward traffic to the agent in the private subnet. The VPC you choose to deploy the agent to should be the same as the one where your preconfigured S3 bucket, Secrets Manager, and CloudWatch reside. Traffic will egress the private subnet back to DataGrail via NAT gateway.
