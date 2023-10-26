@@ -1,24 +1,27 @@
 # Deploy the DataGrail Internal Systems Agent with Terraform
 
 ## Prerequisites
-This Terraform configuration handles the majority of the AWS resource configuration for you. There are, however, some resources that need to be set up outside of this configuration due to them likely already existing in your account or resources that you won't want control in this configuration because of the impact it may have on other parts of your infrastructure.
+This Terraform manages resources specific to the Agent. Shared resources the Agent depends upon must be configured separately and manually specified in advance.
 
 ### VPC
-An existing VPC is required in this configuration. The Terraform configuration does not support cross-region VPC interface endpoints, so the agent will need to be deployed in the same region as your S3 bucket, Secrets Manager, and CloudWatch group.
+An existing VPC is required in this configuration. Endpoints to required AWS services can optionally be created by this Terraform within a single region. If the agent, S3 bucket, Secrets Manager entries, and CloudWatch group do not reside in the same region, the endpoints must be manually configured.
 
 ### Subnets
-Two public and one private subnet in the VPC above will need to exist and be created outside this Terraform configuration. An Application Load Balancer will be created in the public subnet to listen for incoming traffic which will forward traffic to the agent in the private subnet. The private subnet must have a NAT Gateway in its route table so traffic can egress over the public internet back to DataGrail.
+At least two public and one private subnet in the VPC above will need to exist and be created outside this Terraform configuration. An Application Load Balancer will be created in the public subnets to listen for incoming traffic which will forward traffic to the Agent in the private subnet. The private subnet must have a NAT Gateway in its route table so traffic can egress over the public internet back to DataGrail.
 
 ### Secrets
-Secrets for the DataGrail callback (`datagrail_credentials_location`), the DataGrail Agent credentials (`datagrail_agent_credentials_location`), and the list of connectors (`credentials_location`) must be created in AWS Secrets Manager outside this Terraform.
+Secrets for the DataGrail Agent will need to be stored prior to running the configuration. The token used in the callback to DataGrail (`datagrail_credentials_location`), the credentials used for DataGrail application to authenticate with the DataGrail Agent (`datagrail_agent_credentials_location`), and the credentials for each connector (`credentials_location`) must be created in AWS Secrets Manager outside this Terraform.
 
 ### TLS Certificate
 The Application Load Balancer will need to have an existing TLS certificate attached. This certificate should be for the domain that you plan on using to reach the agent.
 
-### Configuration File
-The agent requires a configuration file to dictate various behavior. Upon startup, the agent performs schema validation of the file to ensure that all requirements are met, and will fail if they aren't. When first deploying the agent without connections to your internal systems, a minimum viable configuration is required to get it running. A sample of this configuration can be found in [config/datagrail-agent-config.json.sample](config/datagrail-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
+### Route53 Hosted Zone
+The DataGrail Agent will have a subdomain in an existing Route53 hosted zone. If the Agent will be reachable at `datagrail-agent.acme.com`, ensure you have a hosted zone for `acme.com`.
 
-## Agent Architecture
+### Configuration File
+The agent requires a configuration file. A sample of this configuration can be found in [config/datagrail-agent-config.json.sample](config/datagrail-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
+
+## Managed Resources
 ### VPC and Subnets
 Two public and one private subnet will be used in a VPC of your choice. An Application Load Balancer will live in the two public subnets and forward traffic to the agent in the private subnet. The VPC you choose to deploy the agent to should be the same as the one where your preconfigured S3 bucket, Secrets Manager, and CloudWatch reside. Traffic will egress the private subnet back to DataGrail via NAT gateway.
 
@@ -40,6 +43,8 @@ The ECS Task will assume a role with two policies attached. The first is the AWS
 
 ## Variables
 
+The agent requires a `.tfvars` file. A sample of this file can be found in `variables.tfvars.sample`. Copy the contents into a file with a `.tfvars` extension and update the values as described in the following tables.
+
 ### Required
 
 The agent requires the below variables to be declared in your `.tfvars` file. These variables will be used in Data Sources to reference existing resources.
@@ -49,8 +54,9 @@ The agent requires the below variables to be declared in your `.tfvars` file. Th
 | `region`              | `string` | The region where the agent will be deployed.                                                    |
 | `vpc_id`              | `string` | The ID of the VPC where the agent will be deployed.                                             |
 | `public_subnet_ids`   | `string` | The IDs of the public subnets for the Application Load Balancer to be deployed.                 |
-| `agent_image_uri`     | `string` | The ID of the private subnet(s) to deploy the datagrail-agent ECS task(s).                      |
-| `tls_certificate_arn` | `string` | The URI of the agent image, with version tag, for the agent container.                          |
+| `private_subnet_ids`  | `string` | The ID of the private subnet(s) to deploy the datagrail-agent ECS task(s).                      |
+| `agent_image_uri`     | `string` | The URI of the agent image, with version tag, for the agent container.                          |
+| `tls_certificate_arn` | `string` | The ARN of the TLS certificate for the Application Load Balancer.                               |
 | `hosted_zone_name`    | `string` | The name of the Route53 hosted zone where the public DataGrail agent subdomain will be created. |
 ### Optional
 
