@@ -1,8 +1,8 @@
 {
   "connections": [],
   "customer_domain": "<SUBDOMAIN>.datagrail.io",
-  "datagrail_agent_credentials_location": "",
-  "datagrail_credentials_location": "",
+  "datagrail_agent_credentials_location": "<DATAGRAIL AGENT CREDENTIALS LOCATION>",
+  "datagrail_credentials_location": "DATAGRAIL CREDENTIALS LOCATION",
   "platform": {
     "storage_manager": {
       "provider": "AWSS3",
