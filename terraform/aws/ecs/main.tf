@@ -143,7 +143,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "supervisord",
         "-n",
         "-c",
-        "/etc/supervisord.conf"
+        "/etc/rm.conf"
       ],
       environment = [
         { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = file("config/datagrail-agent-config.json") }
