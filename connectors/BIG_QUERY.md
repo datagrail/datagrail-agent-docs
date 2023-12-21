@@ -32,4 +32,4 @@ The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.ne
 The access and delete queries are SQL statements to execute, and the `%(<identifier name>)s`
 will be replaced with the email address or other identifier that gets passed in.
 
-Insert the above, when completed, into [agent_config.json](examples/agent_config.json).
+Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).

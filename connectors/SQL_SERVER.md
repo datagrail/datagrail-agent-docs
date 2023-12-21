@@ -1,4 +1,4 @@
-# Configuration for Postgresql
+# Configuration for SQL Server
 
 ## Secrets Manager (AWS)
 
@@ -8,9 +8,9 @@ STEP 1: Create a new secret. Use the following to set it up:
     Key/value pairs:
         user: <DB username>
         password: <DB password>
-        host: <server domain name or IP address)
-        port: <port, e.g. 5432>
-        dbname: <DB, e.g. BikeStores>
+        server: <server domain name or IP address)
+        port: <port, e.g. 1433>
+        database: <DB, e.g. BikeStores>
     Secret name: <name for the secret>
     Description: <description for the secret>
 
@@ -25,7 +25,7 @@ STEP 2: Create the configuration
         "uuid":"<create UUID>",
         "capabilities":["privacy/access","privacy/delete","privacy/identifiers"],
         mode":"live",
-        "connector_type":"Postgres",
+        "connector_type":"SQLServer",
         "queries":{
             "identifiers": {
                 "phone_number": [
@@ -43,4 +43,4 @@ The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.ne
 The access and delete queries are SQL statements to execute, and the ``%(<identifier name>)s``
 will be replaced with the email address or other identifier that gets passed in.
 
-Insert the above, when completed, into [agent_config.json](examples/agent_config.json).
+Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).

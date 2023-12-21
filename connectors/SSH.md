@@ -41,7 +41,7 @@ the {} will be replaced with the email address or other identifier that gets pas
 In the above example, we would call `./fake.py example@example.com`, with the caveat that
 the email address is run through [shlex.quote](https://docs.python.org/3/library/shlex.html#shlex.quote).
 
-Insert the above, when completed, into [agent_config.json](examples/agent_config.json).
+Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).
 
 ## Response Format
 

@@ -1,4 +1,4 @@
-# Configuration for SQL Server
+# Configuration for Snowflake
 
 ## Secrets Manager (AWS)
 
@@ -8,9 +8,9 @@ STEP 1: Create a new secret. Use the following to set it up:
     Key/value pairs:
         user: <DB username>
         password: <DB password>
-        server: <server domain name or IP address)
-        port: <port, e.g. 1433>
-        database: <DB, e.g. BikeStores>
+        account: <Snowflake Account, e.g. EXA*****)
+        warehouse: <Snowflake Warehouse, e.g. COMPUTE_WH>
+        database: <Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>
     Secret name: <name for the secret>
     Description: <description for the secret>
 
@@ -25,17 +25,17 @@ STEP 2: Create the configuration
         "uuid":"<create UUID>",
         "capabilities":["privacy/access","privacy/delete","privacy/identifiers"],
         mode":"live",
-        "connector_type":"SQLServer",
+        "connector_type":"Snowflake",
         "queries":{
             "identifiers": {
                 "phone_number": [
-                    "select phone from customers where email=%(email)s"
+                    "SELECT C_PHONE_NUMBER FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"
                 ]
             },
-            "access":["SELECT * FROM sales.staffs where email = %(email)s"],
+            "access":["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"],
             "delete":[]
         },
-       "credentials_location":"<secret ARN from above>"
+        "credentials_location":"<secret ARN from above>"
     }
 
 The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.net/)
@@ -43,4 +43,4 @@ The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.ne
 The access and delete queries are SQL statements to execute, and the ``%(<identifier name>)s``
 will be replaced with the email address or other identifier that gets passed in.
 
-Insert the above, when completed, into [agent_config.json](examples/agent_config.json).
+Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).
