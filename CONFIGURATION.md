@@ -1,7 +1,7 @@
 # DataGrail Agent Configuration
 
 To configure the DataGrail Agent properly, you will need to:
-1. Determine the connectors you want the Agent to connect to and their associated queries.
+1. Determine the system(s) you want the Agent to connect to and their associated connector(s) and queries.
 2. Create secrets for each connector, a client ID and client secret for DataGrail to authenticate with the Agent, and a token for the callback to the DataGrail platform.
 3. Set the environment variable(s).
 
@@ -15,7 +15,7 @@ Take a look at the [connectors](/connectors) directory for what connectors are a
 
 ##### Connector Secret(s)
 
-Each connector will need specific credentials to connect to the system. Please refer to the respective connector's documentation in the [connectors](connectors) directory to know what fields you will need to set.
+Each connector will need specific credentials to connect to the system. Please refer to the respective connector's documentation in the [connectors](connectors) directory to know what parameters each connector requires.
 
 ##### DataGrail Agent Client ID/Client Secret
 
@@ -43,17 +43,16 @@ In the agent configuration, the `datagrail_credentials_location` field will be s
 ```
 #### Environment Variables
 
-You will need to set the following environment variables to run the Agent. The definition of each parameter in the `DATAGRAIL_AGENT_CONFIG` variable can be found below the example.
+You will need to set the following environment variables to run the Agent. The definition of each parameter in the `DATAGRAIL_AGENT_CONFIG` variable can be found below.
 
-*Example Environment Variable Configuration*
 ```dotenv
 DATAGRAIL_AGENT_CONFIG='{
   "connections": [
       {
           "name": "<friendly name of the integration i.e. User DB (shown in the DataGrail application)>",
-          "uuid": "<create UUID (https://www.uuidgenerator.net/)>",
-          "capabilities": [one or more of: "privacy/access|privacy/delete|privacy/identifiers”],
-          "mode": "live|test",
+          "uuid": "<create UUID>",
+          "capabilities": [one or more of: "privacy/access"|"privacy/delete"|"privacy/identifiers”],
+          "mode": "live"|"test",
           "connector_type": "<connector type, e.g. Snowflake, SQLServer, SSH>",
           "queries": {
               "identifiers": {"<identifier name>": ["<identifier query>"]},
@@ -65,7 +64,7 @@ DATAGRAIL_AGENT_CONFIG='{
   ],
   "customer_domain": "<your datagrail customer domain>",
   "datagrail_agent_credentials_location": "<Agent client ID/secret location>",
-  "datagrail_credentials_location": "<DataGrail callback key location>",
+  "datagrail_credentials_location": "<DataGrail API key location>",
   "platform": {
     "credentials_manager": {
       "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP|AzureKeyVault>",
@@ -157,7 +156,7 @@ Agent. `platform` requires two blocks:
 
 **`redis_url`**
 
-Optional field for multi-node deployments. The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a redis instance.
+Optional field for multi-node deployments. The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.
 
 ##### Connector Configuration
 
@@ -166,17 +165,17 @@ Each connector will have its own configuration blob in the `connections` array f
 
 ```
 {
-  "name": "Accounts DB",
-  "uuid": "<create UUID>",
-  "capabilities": [ "privacy/access", "privacy/delete"],
-  "mode": "live",
-  "connector_type": "<connector type, e.g. Snowflake, SQLServer, SSH>",
-  "queries": {
+    "name": "<friendly name of the integration i.e. User DB (shown in the DataGrail application)>",
+    "uuid": "<create UUID>",
+    "capabilities": [one or more of: "privacy/access|privacy/delete|privacy/identifiers”],
+    "mode": "live|test",
+    "connector_type": "<connector type, e.g. Snowflake, SQLServer, SSH>",
+    "queries": {
       "identifiers": {"<identifier name>": ["<identifier query>"]},
-      "access": ["<access query>"],
-      "delete": ["<deletion auery"]
-  },
-  "credentials_location": "<secret location>"
+      "access": ["<access queries>"],
+      "delete": ["<deletion queries>"]
+    },
+    "credentials_location": "<connector secret location>"
 }
 ```
 

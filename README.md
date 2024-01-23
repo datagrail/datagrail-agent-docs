@@ -10,7 +10,7 @@ Internal data must be handled with intention because it is:
 **Fluid:** Modern organizations move fast, and their internal data footprint can change rapidly. In some organizations, self-serve tools might allow a wide range of individuals to make changes to internal data structures
 
 ## Our Approach
-To solve this pain point, we’ve introduced the DataGrail Request Manager Agent for internal data systems. This agent can be installed in your infrastructure and handles the communication between the DataGrail Application and your internal systems via a REST API interface.
+To solve this pain point, we’ve introduced the DataGrail Request Manager Agent for internal data systems. This agent can be installed in your infrastructure and handles the communication between the DataGrail application and your internal systems via a REST API interface.
 
 This solution allows you to create any business logic you would like in your systems while maintaining a standardized interface with the DataGrail application. Our approach ensures the separation of concerns between your internal data operations and the privacy operations of fulfilling DSRs in DataGrail. 
 
@@ -34,4 +34,4 @@ Some custom development may be necessary depending on the target system in quest
 ## Conclusion
 The DataGrail Agent for Internal Systems Integration is designed to be simple, robust, and flexible, enabling you to connect DataGrail to any of your internal data in a secure manner while maintaining a clear separation of concerns between your internal data operations and DSR request fulfillment in DataGrail. The DataGrail team is available to assist in your deployment of this technology in your internal environment.
 
-## Getting
+##Visit the [Configuration](/CONFIGURATION.md) document to get started. 

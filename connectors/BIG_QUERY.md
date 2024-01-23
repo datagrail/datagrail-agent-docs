@@ -1,35 +1,38 @@
 # Configuration for Google BigQuery
 
-## Secrets Manager (GCP)
+#### Secret Creation
 
-STEP 1: Create a new secret. Use the following to set it up:
-
-    Secret name: <name for the secret>
-    Secret Value:
-        {"project_id": "<project id>"}
-
+Create a new secret in JSON format in your preferred credentials manager with the following key/value pairs:
+```json
+{
+    "project_id": "<project ID>"
+}
+```
 Labels, replication, and other settings, please set as necessary.
 
-When finished, please copy the *name* of the secret.
+Copy the name of the secret and insert it in as the value of the `credentials_location` key of the connector.
 
-STEP 2: Create the configuration
+#### Query Syntax and Parameter Binding
+The `access`,`delete` and `identifiers` queries follow standard BigQuery query syntax and support built-in functions. 
 
+Identifiers are passed individually to the queries and are bound to the variables in the operation. Variables are specified using `%(name)s` parameter style ([PEP 249 pyformat paramstyle](https://peps.python.org/pep-0249/#paramstyle)), where `name` is the identifier name (e.g. `email`).
+
+#### Best Practices
+For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in BigQuery without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins.
+
+_Configuration Example:_
+```json
     {
-        "name":"Accounts DB",
-        "uuid":"<create UUID>",
-        "capabilities":["privacy/access","privacy/delete"],
-        mode":"live",
-        "connector_type":"BigQuery",
-        "queries":{
-            "access":["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS = %(email)"],
-            "delete":[]
+        "name": "Metrics",
+        "uuid": "<create UUID>",
+        "capabilities": ["privacy/access","privacy/delete"],
+        "mode": "live",
+        "connector_type": "BigQuery",
+        "queries": {
+            "access": ["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS = %(email)"],
+            "delete": ["DELETE FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS = %(email)"]
         },
-        "credentials_location":"<secret name from above>"
+        "credentials_location":"BigQuery"
     }
+```
 
-The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.net/)
-
-The access and delete queries are SQL statements to execute, and the `%(<identifier name>)s`
-will be replaced with the email address or other identifier that gets passed in.
-
-Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).

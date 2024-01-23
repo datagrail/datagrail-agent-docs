@@ -1,46 +1,48 @@
 # Configuration for Snowflake
 
-## Secrets Manager (AWS)
+#### Secret Creation
 
-STEP 1: Create a new secret. Use the following to set it up:
-
-    Secret Type: "Other type of secret"
-    Key/value pairs:
-        user: <DB username>
-        password: <DB password>
-        account: <Snowflake Account, e.g. EXA*****)
-        warehouse: <Snowflake Warehouse, e.g. COMPUTE_WH>
-        database: <Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>
-    Secret name: <name for the secret>
-    Description: <description for the secret>
-
+Create a new secret in JSON format in your preferred credentials manager with the following key/value pairs:
+```json
+{
+    "user": "<DB username>",
+    "password": "<DB password>",
+    "account": "<Snowflake Account, e.g. EXA*****>",
+    "warehouse": "<Snowflake Warehouse, e.g. COMPUTE_WH>",
+    "database": "<Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>",
+}
+```
 Tags and other settings, please set as necessary.
 
-When finished, please copy the ARN (Amazon Resource Name).
+Copy the location of the secret (e.g. Amazon ARN) and insert it in as the value of the `credentials_location` key of the connector.
 
-STEP 2: Create the configuration
+#### Query Syntax and Parameter Binding
+The `access`,`delete` and `identifiers` queries follow standard Snowflake query syntax and support built-in functions. 
 
+Identifiers are passed individually to the queries and are bound to the variables in the operation. Variables are specified using `%(name)s` parameter style (PEP 249 pyformat paramstyle), where `name` is the identifier name (e.g. `email`).
+
+#### Best Practices
+For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in Snowflake without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins.
+
+_Example Configuration:_
+```json
     {
-        "name":"Accounts DB",
-        "uuid":"<create UUID>",
-        "capabilities":["privacy/access","privacy/delete","privacy/identifiers"],
-        mode":"live",
-        "connector_type":"Snowflake",
-        "queries":{
+        "name": "Accounts DB",
+        "uuid": "f237cdae-e8d1-4799-be0a-8a79c25e33de",
+        "capabilities": ["privacy/access", "privacy/delete", "privacy/identifiers"],
+        "mode": "live",
+        "connector_type": "Snowflake",
+        "queries": {
             "identifiers": {
                 "phone_number": [
                     "SELECT C_PHONE_NUMBER FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"
                 ]
             },
-            "access":["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"],
-            "delete":[]
+            "access": ["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"],
+            "delete": ["DELETE FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"]
         },
-        "credentials_location":"<secret ARN from above>"
+        "credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.snowflake"
     }
+```
 
-The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.net/)
-
-The access and delete queries are SQL statements to execute, and the ``%(<identifier name>)s``
-will be replaced with the email address or other identifier that gets passed in.
-
-Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).
+When complete, insert the above into the `connections` array in the `DATAGRAIL_AGENT_CONFIG` variable.
