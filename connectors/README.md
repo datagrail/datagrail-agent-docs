@@ -1,5 +1,4 @@
 # Connectors
-datagrail-agent-docs/connectors/README.md
 
 ## Overview
 

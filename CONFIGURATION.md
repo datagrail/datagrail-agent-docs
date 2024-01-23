@@ -1,5 +1,7 @@
 # DataGrail Agent Configuration
 
+The DataGrail Agent configuration variable dictates which target systems the Agent should connect to and what operations should be performed. The variable also holds information about credentials location and the cloud storage bucket and credentials manager the Agent should use.
+
 To configure the DataGrail Agent properly, you will need to:
 1. Determine the system(s) you want the Agent to connect to and their associated connector(s) and queries.
 2. Create secrets for each connector, a client ID and client secret for DataGrail to authenticate with the Agent, and a token for the callback to the DataGrail platform.
@@ -85,21 +87,21 @@ DATAGRAIL_AGENT_CONFIG='{
 
 # AWS configuration variables (if configured as AWS platform)
 # If you have AWS credentials configured in your ~/.aws/credentials path, docker-compose will automatically pull them in so you don't have to configure it here
-AWS_ACCESS_KEY_ID=<aws access key ID>
-AWS_SECRET_ACCESS_KEY=<aws secret access key>
-AWS_REGION=<aws region>
+AWS_ACCESS_KEY_ID=<AWS access key ID>
+AWS_SECRET_ACCESS_KEY=<AWS secret access key>
+AWS_REGION=<AWS region>
 # Note: Backblaze uses AWS libraries, and as such, uses the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY variables for credentials.
 # However, it requires the region to be set in the configuration, ignoring the AWS_REGION environment variable.
 # Additionally, backblaze can use environment variables BACKBLAZE_ACCESS_KEY_ID and BACKBLAZE_SECRET_ACCESS_KEY to prevent conflict
 # with existing AWS services like Secrets Manager.
 
 # Google credentials JSON (if configured as GCP platform)
-GOOGLE_APPLICATION_CREDENTIALS_JSON='<extracted google credentials file json>'
+GOOGLE_APPLICATION_CREDENTIALS_JSON='<Extracted Google credentials file json>'
 
 # AZURE Environment Variables:
-AZURE_TENANT_ID="The Azure Active Directory tenant(directory) ID."
-AZURE_CLIENT_ID="The client(application) ID of an App Registration in the tenant."
-AZURE_CLIENT_SECRET="A client secret that was generated for the App Registration."
+AZURE_TENANT_ID=<The Azure Active Directory tenant(directory) ID.>
+AZURE_CLIENT_ID=<The client (application) ID of an App Registration in the tenant.>
+AZURE_CLIENT_SECRET=<A client secret that was generated for the App Registration.>
 ```
 
 **NOTE:** `project_id` can be left blank if deploying in AWS, required for GCP

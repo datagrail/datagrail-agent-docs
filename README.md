@@ -34,4 +34,4 @@ Some custom development may be necessary depending on the target system in quest
 ## Conclusion
 The DataGrail Agent for Internal Systems Integration is designed to be simple, robust, and flexible, enabling you to connect DataGrail to any of your internal data in a secure manner while maintaining a clear separation of concerns between your internal data operations and DSR request fulfillment in DataGrail. The DataGrail team is available to assist in your deployment of this technology in your internal environment.
 
-##Visit the [Configuration](/CONFIGURATION.md) document to get started. 
+## Visit the [Configuration](/CONFIGURATION.md) document to get started. 
