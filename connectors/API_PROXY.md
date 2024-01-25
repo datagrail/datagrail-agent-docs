@@ -35,60 +35,60 @@ Copy the location of the secret (e.g. Amazon ARN) and insert it in as the value 
 
 _Example Configuration:_
 ```json
-    {
-        "name": "User Service",
-        "uuid": "44d9e703-b8cf-40a8-a138-3cc110319b0d",
-        "capabilities": ["privacy/access", "privacy/delete", "privacy/identifiers"],
-        "mode": "live",
-        "connector_type": "APIProxy",
-        "queries": {
-            "test": [
-                {
-                    "url": "https://api.acme.com/v0/health-check",
-                    "headers": {
-                        "Authorization": "Basic {credentials}"
-                    },
-                    "body": "",
-                    "verb": "POST",
-                    "verify_ssl": "true"
-                }
-            ],
-            "identifiers": {
-                "phone_number": [{
-                    "url": "https://api.acme.com/v0/identifiers/get-phone",
-                    "headers": {
-                        "Authorization": "Basic {credentials}"
-                    },
-                    "body": "{{\"email\": \"{email}\"}}",
-                    "verb": "POST",
-                    "verify_ssl": "true"
-                }]
-            },
-            "access":[
-                {
-                    "url": "https://api.acme.com/v0/users",
-                    "headers": {
-                        "Authorization": "Basic {credentials}"
-                    },
-                    "body": "{{\"email\": \"{email}}\"}",
-                    "verb": "GET",
-                    "verify_ssl": "true"
-                }
-            ],
-            "delete": [
-                {
-                    "url": "https://api.acme.com/v0/users",
-                    "headers": {
-                        "Authorization": "Basic {credentials}"
-                    },
-                    "body": "{{\"email\": \"{email}}\"}",
-                    "verb": "DELETE",
-                    "verify_ssl": "true"
-                }
-            ]
+{
+    "name": "User Service",
+    "uuid": "44d9e703-b8cf-40a8-a138-3cc110319b0d",
+    "capabilities": ["privacy/access", "privacy/delete", "privacy/identifiers"],
+    "mode": "live",
+    "connector_type": "APIProxy",
+    "queries": {
+        "test": [
+            {
+                "url": "https://api.acme.com/v0/health-check",
+                "headers": {
+                    "Authorization": "Basic {credentials}"
+                },
+                "body": "",
+                "verb": "POST",
+                "verify_ssl": "true"
+            }
+        ],
+        "identifiers": {
+            "phone_number": [{
+                "url": "https://api.acme.com/v0/identifiers/get-phone",
+                "headers": {
+                    "Authorization": "Basic {credentials}"
+                },
+                "body": "{{\"email\": \"{email}\"}}",
+                "verb": "POST",
+                "verify_ssl": "true"
+            }]
         },
-       "credentials_arn": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service"
-    }
+        "access":[
+            {
+                "url": "https://api.acme.com/v0/users",
+                "headers": {
+                    "Authorization": "Basic {credentials}"
+                },
+                "body": "{{\"email\": \"{email}}\"}",
+                "verb": "GET",
+                "verify_ssl": "true"
+            }
+        ],
+        "delete": [
+            {
+                "url": "https://api.acme.com/v0/users",
+                "headers": {
+                    "Authorization": "Basic {credentials}"
+                },
+                "body": "{{\"email\": \"{email}}\"}",
+                "verb": "DELETE",
+                "verify_ssl": "true"
+            }
+        ]
+    },
+   "credentials_arn": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service"
+}
 ```
 When complete, insert the above into the `connections` array in the `DATAGRAIL_AGENT_CONFIG` variable.
 
