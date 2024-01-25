@@ -2,13 +2,15 @@
 
 Use the API Proxy connector to invoke internal or third-party REST APIs to perform data subject access, deletion, or identifier retrieval requests.
 
-## Connector Configuration
+## ⚙️ Connector Configuration
 The API Proxy connector follows the standard connector schema outlined in the `connectors` root directory.
 
-### 🧐 Queries 
+### Queries 
 The `access`, `deletion`, and `test` queries are an array of objects.
 
 The `identifiers` queries are defined in a single object with each key being the name of the identifier to retrieve, and a value of an array of objects. You must first create an alternate identifier in your DataGrail instance by following [this](https://docs.datagrail.io/docs/request-manager/request-processing/multi-id-setup) article. The name of the identifier in the Agent configuration is a "snake_case" version of what you named the identifier in DataGrail e.g. "Phone Number" would be `"phone_number"`.
+
+The API Proxy connector **requires** a `test` query (or queries) to determine liveness of the API being invoked. The endpoint must return a 200 status code to pass the health check.
 
 All query objects should have the below attributes:
 
@@ -21,10 +23,8 @@ All query objects should have the below attributes:
 | `verify_ssl` (required)           | string        | Determines whether to verify the SSL certificate of the URL. Accepted values are `"true"` or `"false"`.                                                                                                                                                                                                                                                                                                                                                              |
 | `valid_response_codes` (optional) | array[number] | An array of status codes that the Agent should consider successful. The default value is `[200]`.  <br/><br/>  **Note:** The Agent will not handle instances of a data subject not existing any differently than a successful access, deletion, or identifier retrieval request. If the API returns a 404, for example, when a data subject does not exist, 404 should be added to the array of valid response code.                                                 |
 
-### 🧪 Test Query
-The API Proxy connector **requires** a `test` query (or queries) to determine liveness of the API being invoked. The endpoint must return a 200 status code to pass the health check.
 
-### 🔑 Credentials
+### Credentials
 Credentials to include in the request will be stored in JSON format in your preferred credentials manager. The key/value pairs in the secret will be dictated by substitutions you need to make in your headers.
 If the API uses Basic Authentication, for example, the headers in the configuration for the connector would be set as `"headers": {"Authorization": Basic "{credentials}"`, where a
 key of `credentials` would be set to the credentials value, like so: `{"credentials": "<base64 encoded username:password>"}`
@@ -92,16 +92,16 @@ _Example Configuration:_
 ```
 When complete, insert the above into the `connections` array in the `DATAGRAIL_AGENT_CONFIG` variable.
 
-## System Requirements
+## 🖥️ System Requirements
 
 The API Proxy connector requires the following criteria to be met.
 
-### 🪪 Authentication
+### Authentication
 
 The API proxy connector supports static token-based authentication. An access token must be pre-generated to be used to 
 authenticate requests.
 
-### 🤝 Request-Response
+### Request-Response
 ##### Flow
 
 The API must employ a synchronous response flow whereby all operations occur over a single open connection.
@@ -168,9 +168,8 @@ The response body of an identifier retrieval request must be an array of objects
 ```
 The identifier category key is a snake_cased version of the identifier category that the identifier is assigned in the DataGrail application.
 
-### Methods
+### HTTP Methods
 All HTTP request methods are supported.
 
-### Headers and Body
-The headers and body of the request can contain anything of your choosing. The query configuration serves as the 
-template for the request where the content required for the request can be specified. 
+### Header and Body 
+The headers and body of the request can contain anything of your choosing. The query configuration serves as the template for the request where the content required for the request can be specified. 
