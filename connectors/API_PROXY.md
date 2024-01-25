@@ -8,7 +8,7 @@ The API Proxy connector follows the standard connector schema outlined in the `c
 ### 🧐 Queries 
 The `access`, `deletion`, and `test` queries are an array of objects.
 
-The `identifiers` queries are defined in a single object with each key being the name of the identifier to retrieve, and the value of an array of objects. You must first create an alternate identifier in your DataGrail instance by following [this](https://docs.datagrail.io/docs/request-manager/request-processing/multi-id-setup) article. The name of the identifier in the Agent configuration is a snake_case version of what you named the identifier in DataGrail e.g. "Phone Number" would be `"phone_number"`
+The `identifiers` queries are defined in a single object with each key being the name of the identifier to retrieve, and a value of an array of objects. You must first create an alternate identifier in your DataGrail instance by following [this](https://docs.datagrail.io/docs/request-manager/request-processing/multi-id-setup) article. The name of the identifier in the Agent configuration is a "snake_case" version of what you named the identifier in DataGrail e.g. "Phone Number" would be `"phone_number"`.
 
 All query objects should have the below attributes:
 
