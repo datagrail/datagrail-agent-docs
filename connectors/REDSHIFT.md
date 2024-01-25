@@ -23,6 +23,8 @@ Identifiers are passed individually to the queries and are bound to the variable
 
 #### Best Practices
 For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in Redshift without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins.
+
+_Example Configuration:_
 ```json
     {
         "name":"Metrics DWH",
@@ -33,18 +35,14 @@ For ease of maintainability and readability, it is suggested that the various qu
         "queries":{
             "identifiers": {
                 "phone_number": [
-                    "SELECT phone FROM customers WHERE email=%(email)s"
+                    "call get_phone_number(%(email)s)"
                 ]
             },
-            "access":["SELECT * FROM metrics.sales WHERE email = %(email)s"],
-            "delete":["DELETE FROM metrics.sales WHERE = %(email)s"]
+            "access":["call dsr('access', %(email)s)"],
+            "delete":["call dsr('delete', %(email)s)"]
         },
        "credentials_location":"arn:aws:secretsmanager:Region:AccountId:secret:datagrail.redshift"
     }
 ```
-The UUID can be generated at, e.g. [UUID Generator](https://www.uuidgenerator.net/)
 
-The access and delete queries are SQL statements to execute, and the ``%(<identifier name>)s``
-will be replaced with the email address or other identifier that gets passed in.
-
-Insert the above, when completed, into [agent_config.json](../examples/agent_config.json).
+Insert the above, when completed, into the `connections` array in the `DATAGRAIL_AGENT_CONFIG` variable.

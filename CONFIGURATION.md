@@ -165,11 +165,11 @@ Optional field for multi-node deployments. The Agent needs persistent storage du
 Each connector will have its own configuration blob in the `connections` array field:
 
 
-```
+```json
 {
     "name": "<friendly name of the integration i.e. User DB (shown in the DataGrail application)>",
     "uuid": "<create UUID>",
-    "capabilities": [one or more of: "privacy/access|privacy/delete|privacy/identifiers”],
+    "capabilities": ["one or more of: privacy/access|privacy/delete|privacy/identifiers"],
     "mode": "live|test",
     "connector_type": "<connector type, e.g. Snowflake, SQLServer, SSH>",
     "queries": {
