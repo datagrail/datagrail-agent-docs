@@ -1,50 +1,38 @@
-# Setup
+# DataGrail Request Manager Agent
+##  Motivation 
+For many modern businesses, internal data systems are a large repository of sensitive personal information. DataGrail makes it simple to extend automating Data Subject Request (DSR) processing to these systems by deploying the DataGrail Request Manager Agent in your network to connect to your critical infrastructure.
 
-## Network Communication Requirements
+Internal data must be handled with intention because it is:
 
-The agent service does not support internal TLS termination, configuring a load balancer or another form of TLS
-termination is required. TLS 1.2+ is required to provide secure communication between services.
+**Highly sensitive:** The data most critical to operating your business.
 
-Ingress will be made to the agent API over port 443 and will arrive from our VPC IP: `52.36.177.91`. Inbound requests
-from any other source should be rejected.
+**Delicate:** Altering certain data may have downstream effects (think of deleting a customer record and losing all revenue accounting for their associated orders).
 
-The agent will make network requests to the systems you have configured. In addition to these systems, it will also call
-back to the DataGrail API via TLS at:
+**Fluid:** Modern organizations move fast, and their internal data footprint can change rapidly. In some organizations, self-serve tools might allow a wide range of individuals to make changes to internal data structures
 
-```
-https://<customer-name>.datagrail.io
-```
+## Our Approach
+To solve this pain point, DataGrail has created the Request Manager Agent for internal data systems. This Agent can be installed in your infrastructure to handle the communication between the DataGrail application and your internal systems via a REST API interface.
 
-It will also place request results in your cloud storage bucket (AWS S3, Google Cloud Storage, or Azure Blob Storage)
-over the Amazon API using Python’s boto3 package.
+This solution allows you to create any business logic you would like in your systems while maintaining a standardized interface with the DataGrail application. Our approach ensures the separation of concerns between your internal data operations and the privacy operations of fulfilling DSRs in DataGrail. 
 
-# Installation
+## Deployment
+The DataGrail Agent can be deployed in various cloud providers such as AWS, GCP, and Azure using container orchestration technologies like ECS and Kubernetes.
 
-This folder contains installation scripts and instructions for the common platforms DataGrail supports.
+## Docker 
+The DataGrail Agent will be provided as a Docker image which you will need to run in a container inside your infrastructure. The container will be configured through environment variables which will contain information about your internal systems, credentials, queries, and other metadata needed to run the agent.
 
-## Configuration
+## Networking
+The DataGrail Agent running in your container must have network access to the internal systems you want to connect. Additionally, it must provide ingress from DataGrail to the API it serves. We recommend hosting the DataGrail Agent behind a customer-provided load balancer that handles SSL validation and termination.
 
-[DataGrail Agent Configuration](DATAGRAIL_AGENT_CONFIGURATION_README.md) - Configuration instructions for
-the `datagrail-agent`
+## Flexibility
+The DataGrail Agent makes connections to internal systems through a set of componentized integrations. DataGrail provides a standard set of integrations for use with common systems (databases, APIs, etc), however, the Agent is designed to be extended through the use of custom components to encompass any needs specific to your organization. These are developed as Python modules that the DataGrail Agent will automatically discover and connect to using the defined configurations.
 
-## Platforms
+## Request Processing
+On receipt of a request for processing from DataGrail, the Agent will use the integration components to forward the requests on to the target system. The DataGrail Agent is designed to be able to handle any processing strategies in the target system through the integration components. Asynchronous and synchronous processing are both supported. 
 
-[AWS ECS README](AWS_ECS_README.md) - Setup instructions for Amazon ECS.
+Some custom development may be necessary depending on the target system in question. The DataGrail Agent is designed to handle the normalization of any data returned from the target system internally.
 
-## Connectors
+## Conclusion
+The DataGrail Agent for Internal Systems Integration is designed to be simple, robust, and flexible, enabling you to connect DataGrail to any of your internal data in a secure manner while maintaining a clear separation of concerns between your internal data operations and DSR request fulfillment in DataGrail. The DataGrail team is available to assist in your deployment of this technology in your internal environment.
 
-[BigQuery](BIG_QUERY.md) - Instructions for setting up and configuring the BigQuery Connector
-
-[MySQL](MYSQL.md) - Instructions for setting up and configuring the MySQL Connector
-
-[PostgreSQL](POSTGRES.md) - Instructions for setting up and configuring the PostgreSQL Connector
-
-[Redshift](REDSHIFT.md) - Instructions for setting up and configuring the Redshift Connector
-
-[Snowflake](SNOWFLAKE.md) - Instructions for setting up and configuring the Snowflake Connector
-
-[SQL Server](SQL_SERVER.md) - Instructions for setting up and configuring the SQL Server Connector
-
-[SSH Client](SSH.md) - Instructions for setting up and configuring the SSH Connector
-
-[API Proxy](API_PROXY.md) - Instructions for setting up and configuring the API Proxy Connector
+## Visit the [Configuration](/CONFIGURATION.md) document to get started. 
