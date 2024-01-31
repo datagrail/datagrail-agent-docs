@@ -1,4 +1,5 @@
-# Introduction 
+# DataGrail Request Manager Agent
+##  Motivation 
 For many modern businesses, internal data systems are a large repository of sensitive personal information. DataGrail makes it simple to extend automating Data Subject Request (DSR) processing to these systems by deploying the DataGrail Request Manager Agent in your network to connect to your critical infrastructure.
 
 Internal data must be handled with intention because it is:
@@ -10,7 +11,7 @@ Internal data must be handled with intention because it is:
 **Fluid:** Modern organizations move fast, and their internal data footprint can change rapidly. In some organizations, self-serve tools might allow a wide range of individuals to make changes to internal data structures
 
 ## Our Approach
-To solve this pain point, we’ve introduced the DataGrail Request Manager Agent for internal data systems. This agent can be installed in your infrastructure and handles the communication between the DataGrail application and your internal systems via a REST API interface.
+To solve this pain point, DataGrail has created the Request Manager Agent for internal data systems. This Agent can be installed in your infrastructure to handle the communication between the DataGrail application and your internal systems via a REST API interface.
 
 This solution allows you to create any business logic you would like in your systems while maintaining a standardized interface with the DataGrail application. Our approach ensures the separation of concerns between your internal data operations and the privacy operations of fulfilling DSRs in DataGrail. 
 

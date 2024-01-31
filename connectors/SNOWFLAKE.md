@@ -1,8 +1,18 @@
-# Configuration for Snowflake
+# Snowflake Connector
+
+#### Query Syntax and Parameter Binding
+All queries are query strings that should follow standard Snowflake syntax. 
+
+Identifiers are passed individually to queries and are bound to the variables in the operation. Variables are specified using the [pyformat](https://peps.python.org/pep-0249/#paramstyle) parameter style (e.g. `...WHERE name = %(name)s` where `name` is the identifier name such as`email`).
+
+#### Best Practices
+For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in Snowflake without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins.
 
 #### Secret Creation
 
-Create a new secret in JSON format in your preferred credentials manager with the following key/value pairs:
+It is advised to create a DataGrail Agent-specific Snowflake User or Role to scope the permissions to the operations that it needs to perform. 
+
+Create a new secret wither the users' credentials in JSON format in your preferred credentials manager with the following key/value pairs:
 ```json
 {
     "user": "<DB username>",
@@ -16,14 +26,6 @@ Tags and other settings, please set as necessary.
 
 Copy the location of the secret (e.g. Amazon ARN) and insert it in as the value of the `credentials_location` key of the connector.
 
-#### Query Syntax and Parameter Binding
-The `access`,`delete` and `identifiers` queries follow standard Snowflake query syntax and support built-in functions. 
-
-Identifiers are passed individually to the queries and are bound to the variables in the operation. Variables are specified using `%(name)s` parameter style (PEP 249 pyformat paramstyle), where `name` is the identifier name (e.g. `email`).
-
-#### Best Practices
-For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in Snowflake without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins.
-
 _Example Configuration:_
 ```json
     {
@@ -35,11 +37,11 @@ _Example Configuration:_
         "queries": {
             "identifiers": {
                 "phone_number": [
-                    "SELECT C_PHONE_NUMBER FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"
+                    "CALL get_phone_number(%(email)s)"
                 ]
             },
-            "access": ["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"],
-            "delete": ["DELETE FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS =  %(email)s"]
+            "access": ["CALL dsr_operation('access', %(email)s)"],
+            "delete": ["CALL dsr_operation('delete', %(email)s)"]
         },
         "credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.snowflake"
     }

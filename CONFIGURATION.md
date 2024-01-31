@@ -4,7 +4,10 @@ The DataGrail Agent configuration variables dictate the target systems the Agent
 
 To configure the DataGrail Agent properly, you will need to:
 1. Determine the system(s) you want the Agent to connect to, their associated connector(s) and the applicable queries.
-2. Create and store secrets for each connector, for DataGrail to authenticate with the Agent, and for the callback to the DataGrail platform.
+2. Create and store secrets for:
+   1. Each connector.
+   2. The OAuth Client Credentials for the Agent to authorize operations by the DataGrail application.
+   3. The callback token to authenticate the Agent's callbacks to the DataGrail platform.
 3. Set the environment variable(s).
 
 ## Configuration
@@ -14,16 +17,15 @@ To configure the DataGrail Agent properly, you will need to:
 Take a look at the [connectors](/connectors) directory for what connectors are available and choose the ones you would like to set up. Each connector will have its own configuration represented in the `DATAGRAIL_AGENT_CONFIG` environment variable in the `connections` array field. Example configurations for each connector are available in their respective document.
 
 ### Secrets
+The Agent will use a supported secrets manager to store all secrets.
 
 ##### Connector Secret(s)
+Each connector will need credentials to establish a connection to the system. You can refer to the respective connector's documentation in the [connectors](connectors) directory to know what credential parameters each connector requires.
 
-Each connector will need credentials to establish a connection to the system. You can refer to the respective connector's documentation in the [connectors](connectors) directory to know what parameters each connector requires.
+##### OAuth Client Credentials
+DataGrail will be authorized to access the Agent's resources using the [OAuth Client Credentials](https://www.oauth.com/oauth2-servers/access-tokens/client-credentials/) grant type. The `client_id` and `client_secret` are arbitrary values that you will create to be read by the Agent to grant an access token during the [Client Credentials flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow).
 
-##### DataGrail Agent Client ID/Client Secret
-
-When connecting to the Agent from the DataGrail platform, authorization will occur using OAuth which requires a Client ID and Client Secret. Both of these fields are arbitrary values that will be stored in a single secret and be read by the Agent to grant an access token during the [client credentials](https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow) flow.
-
-The raw contents of the secret will need to be in JSON format with the following key/value pairs:
+In your secrets manager, store a `client_id` and `client_secret`. The raw contents of the secret should be in JSON format with the following key/value pairs:
 
 ```json
 {
@@ -36,7 +38,7 @@ The raw contents of the secret will need to be in JSON format with the following
 
 For the Agent to make calls back to the DataGrail application, it will need an API token to authorize its requests. Your DataGrail representative will provide this key to you. 
 
-The raw contents of the secret will need to be in a JSON format with the following format:
+In your secrets manager, store your DataGrail-provided callback token. The raw contents of the secret should be in a JSON format with the following format:
 
 ```json
 {
@@ -45,7 +47,7 @@ The raw contents of the secret will need to be in a JSON format with the followi
 ```
 ### Environment Variables
 
-You will need to set the following environment variables to run the Agent. The definition of each parameter in the `DATAGRAIL_AGENT_CONFIG` variable can be found below.
+The `DATAGRAIL_AGENT_CONFIG`
 
 ```dotenv
 DATAGRAIL_AGENT_CONFIG='{
@@ -85,23 +87,7 @@ DATAGRAIL_AGENT_CONFIG='{
   "redis_url": "connection string to remote redis instance (for multi-node deployments only)"
 }'
 
-# AWS credentials/configuration variables (if configured as AWS platform)
-# If you have AWS credentials configured in your ~/.aws/credentials path, docker-compose will automatically pull them in so you don't have to configure it here
-AWS_ACCESS_KEY_ID=<AWS access key ID>
-AWS_SECRET_ACCESS_KEY=<AWS secret access key>
-AWS_REGION=<AWS region>
-# Note: Backblaze uses AWS libraries, and as such, uses the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY variables for credentials.
-# However, it requires the region to be set in the configuration, ignoring the AWS_REGION environment variable.
-# Additionally, backblaze can use environment variables BACKBLAZE_ACCESS_KEY_ID and BACKBLAZE_SECRET_ACCESS_KEY to prevent conflict
-# with existing AWS services like Secrets Manager.
-
-# Google credentials/configuration JSON (if configured as GCP platform)
-GOOGLE_APPLICATION_CREDENTIALS_JSON='<Extracted Google credentials file json>'
-
-# Azure credentials (if configured as an Azure platform)
-AZURE_TENANT_ID=<The Azure Active Directory tenant(directory) ID.>
-AZURE_CLIENT_ID=<The client (application) ID of an App Registration in the tenant.>
-AZURE_CLIENT_SECRET=<A client secret that was generated for the App Registration.>
+#
 ```
 
 
@@ -159,3 +145,25 @@ Agent. `platform` requires two blocks:
 
 Optional field for multi-node deployments. The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.
 
+#### Amazon Web Services
+
+| Name                     | Value                                                                                            |
+|--------------------------|--------------------------------------------------------------------------------------------------|
+| `AWS_ACCESS_KEY_ID`      | AWS access key associated with an IAM account.                                                   |
+| `AWS_SECRET_ACCESS_KEY`  | ecret key associated with the access key. This is essentially the "password" for the access key. |
+| `AWS_REGION`             | The AWS Region to send the request to.                                                           |
+
+
+
+#### Google Cloud Platform
+
+| Name                                  | Value                                   |
+|---------------------------------------|-----------------------------------------|
+| `GOOGLE_APPLICATION_CREDENTIALS_JSON` | Extracted Google credentials file JSON. |
+
+#### Azure
+| Name                  | Value                                                             |
+|-----------------------|-------------------------------------------------------------------|
+| `AZURE_TENANT_ID`     | The Azure Active Directory tenant (directory) ID.                 |
+| `AZURE_CLIENT_ID`     | The client (application) ID of an App Registration in the tenant. |
+| `AZURE_CLIENT_SECRET` | A client secret that was generated for the App Registration.      |

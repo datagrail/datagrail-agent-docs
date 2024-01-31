@@ -1,14 +1,14 @@
-# Connectors
+# Connector Configuration
 
 ## Overview
 
 The DataGrail Agent establishes connections to internal systems through a set of componentized integrations. DataGrail provides and is constantly expanding a standard set of integrations for use with common systems (databases, APIs, etc), however, the DataGrail Agent is designed to be extended through the use of custom components to encompass any needs specific to your organization. These are developed as Python modules that the DataGrail Agent will automatically discover and connect to using the defined configurations.
 
-## Configuration
+## Setup
 
-All connector configurations follow the same schema and required parameters, but the parameter binding syntax, and credentials/connection formats will differ. Refer to the connector's respective document for more information.
+Each connector is defined as an object in the `connections` array in the `DATAGRAIL_AGENT_CONFIG` environment variable. All connector configurations follow the same schema and required parameters, but the parameter binding syntax of the queries, and credentials/connection formats will differ. Refer to the connection's respective document for more information.
 
-Each connection is defined as an object in the `connections` array in the Agent’s configuration environment variable. The general format of each connection object is outlined below, with connection-specific examples in their respective instructions document.
+
 ```json
 {
   "name": "<friendly name of the  target system>",
@@ -24,3 +24,37 @@ Each connection is defined as an object in the `connections` array in the Agent�
   "credentials_location": "<secret location e.g. Amazon ARN>"
 }
 ```
+### Parameter Definitions
+**`name`**
+
+The friendly name of the target system. This string will be displayed in the request results inside DataGrail. The name should be ASCII-only.
+
+**`uuid`**
+
+The UUID associated with the connection. This should be a v4 UUID and should be unique per connection. You can use a service like [UUID Generator](https://www.uuidgenerator.net/) to obtain these easily.
+
+**`capabilities`**
+
+Specifies the capabilities the connection should be used for. A connection should contain at least one capability. Valid entries are:
+
+`privacy/access` - the connection should be used to satisfy data access requests.
+
+`privacy/delete` - the connection should be used to process deletion requests.
+
+`privacy/identifiers` - the connection should be used to process identifier retrieval requests.
+
+**`mode`**
+
+Indicates the status of the connection. The mode `“test”` should be used for a connection that is not ready for use by DataGrail in service of privacy requests. Otherwise, the mode should be set to `“live”`.
+
+**`connector_type`**
+
+This field is used to configure the connector that DataGrail should use for the system connection. The adapter must be in the set of supported system types. See the [connectors](../connectors) directory for available connectors.
+
+**`queries`**
+
+Query syntax varies based on the target system. Refer to the connector-specific documentation in this directory for the proper syntax and requirements.
+
+**`credentials_location`**
+
+Local of the secret (e.g. AWS ARN) which should contain the credentials associated with the connection. The format of the credentials is specific to the target system but is generally contained in a JSON-encoded dictionary stored in the secret. For examples specific to your system, see the specific connector documentation: [Snowflake](SNOWFLAKE.md), [SQL Server](SQL_SERVER.md), [SSH](SSH.md), etc.

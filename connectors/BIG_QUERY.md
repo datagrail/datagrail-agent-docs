@@ -1,4 +1,4 @@
-# Configuration for Google BigQuery
+# Google BigQuery
 
 #### Secret Creation
 
@@ -13,9 +13,9 @@ Labels, replication, and other settings, please set as necessary.
 Copy the name of the secret and insert it in as the value of the `credentials_location` key of the connector.
 
 #### Query Syntax and Parameter Binding
-The `access`,`delete` and `identifiers` queries follow standard BigQuery query syntax and support built-in functions. 
+All queries are query strings that should follow standard BigQuery query syntax. 
 
-Identifiers are passed individually to the queries and are bound to the variables in the operation. Variables are specified using `%(name)s` parameter style ([PEP 249 pyformat paramstyle](https://peps.python.org/pep-0249/#paramstyle)), where `name` is the identifier name (e.g. `email`).
+Identifiers are passed individually to queries and are bound to the variables in the operation. Variables are specified using the [pyformat](https://peps.python.org/pep-0249/#paramstyle) parameter style (e.g. `...WHERE name = %(name)s` where `name` is the identifier name such as`email`).
 
 #### Best Practices
 For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in BigQuery without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins.
@@ -25,12 +25,17 @@ _Configuration Example:_
     {
         "name": "Metrics",
         "uuid": "<create UUID>",
-        "capabilities": ["privacy/access","privacy/delete"],
+        "capabilities": ["privacy/access","privacy/delete", "privacy/identifiers"],
         "mode": "live",
         "connector_type": "BigQuery",
         "queries": {
-            "access": ["SELECT * FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS = %(email)"],
-            "delete": ["DELETE FROM TPCDS_SF100TCL.CUSTOMER where C_EMAIL_ADDRESS = %(email)"]
+          "identifiers": {
+                "phone_number": [
+                    "CALL metrics.get_phone_number(%(email)s)"
+                ]
+            },
+            "access": ["CALL metrics.dsr_operation('access', %(email))"],
+            "delete": ["CALL metrics.dsr_operation('delete', %(email))"]
         },
         "credentials_location":"BigQuery"
     }

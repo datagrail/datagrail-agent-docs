@@ -2,17 +2,14 @@
 
 Use the API Proxy connector to invoke internal or third-party REST APIs to perform data subject access, deletion, or identifier retrieval requests.
 
-## ⚙️ Connector Configuration
+## ⚙️ Configuration
 The API Proxy connector follows the standard connector schema outlined in the `connectors` root directory.
 
 ### Queries 
-The `access`, `deletion`, and `test` queries are an array of objects.
 
-The `identifiers` queries are defined in a single object with each key being the name of the identifier to retrieve, and a value of an array of objects. You must first create an alternate identifier in your DataGrail instance by following [this](https://docs.datagrail.io/docs/request-manager/request-processing/multi-id-setup) article. The name of the identifier in the Agent configuration is a "snake_case" version of what you named the identifier in DataGrail e.g. "Phone Number" would be `"phone_number"`.
+**Note**: The API Proxy connector **requires** an additional `test` query (or queries) for health checks to determine liveness of the API. The endpoint must return a 200 status code to pass the health check.
 
-The API Proxy connector **requires** a `test` query (or queries) to determine liveness of the API being invoked. The endpoint must return a 200 status code to pass the health check.
-
-All query objects should have the below attributes:
+All query objects can contain the below attributes:
 
 | Name                              | Type          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |-----------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -21,7 +18,7 @@ All query objects should have the below attributes:
 | `body` (optional)                 | string        | The body to include in the request. Set as necessary. Substitutions to be made with identifiers or values stored in your credential manager can be indicated with the variable name surrounded by curly brackets e.g.  `"body": "{{\"email\": \"{email}\"}}"`.  <br/><br/>   **Note:**  Double curly braces should be used to escape a curly brace to keep it in the payload of the request e.g. the above body would result in  `{"email": "<data subject email>"}` |
 | `verb` (required)                 | string        | The HTTP request method for the API call. All HTTP methods are supported.                                                                                                                                                                                                                                                                                                                                                                                            |
 | `verify_ssl` (required)           | string        | Determines whether to verify the SSL certificate of the URL. Accepted values are `"true"` or `"false"`.                                                                                                                                                                                                                                                                                                                                                              |
-| `valid_response_codes` (optional) | array[number] | An array of status codes that the Agent should consider successful. The default value is `[200]`.  <br/><br/>  **Note:** The Agent will not handle instances of a data subject not existing any differently than a successful access, deletion, or identifier retrieval request. If the API returns a 404, for example, when a data subject does not exist, 404 should be added to the array of valid response code.                                                 |
+| `valid_response_codes` (optional) | array(number) | An array of status codes that the Agent should consider successful. The default value is `[200]`.  <br/><br/>  **Note:** The Agent will not handle instances of a data subject not existing any differently than a successful access, deletion, or identifier retrieval request. If the API returns a 404, for example, when a data subject does not exist, 404 should be added to the array of valid response code.                                                 |
 
 
 ### Credentials
@@ -31,7 +28,7 @@ key of `credentials` would be set to the credentials value, like so: `{"credenti
 
 Tags and other settings should be set as necessary.
 
-Copy the location of the secret (e.g. Amazon ARN) and insert it in as the value of the `credentials_location` key of the connector.
+Copy the location of the secret (e.g. Amazon Secrets Manager ARN) and insert it in as the value of the `credentials_location` key of the connector.
 
 _Example Configuration:_
 ```json
@@ -94,11 +91,11 @@ When complete, insert the above into the `connections` array in the `DATAGRAIL_A
 
 ## 🖥️ System Requirements
 
-The API Proxy connector requires the following criteria to be met.
+The API Proxy connector requires the following criteria of the system to be met.
 
 ### Authentication
 
-The API proxy connector supports static token-based authentication. An access token must be pre-generated to be used to 
+The connector supports static token-based authentication. An access token must be pre-generated to be used to 
 authenticate requests.
 
 ### Request-Response
@@ -159,6 +156,8 @@ _Example Access Response:_
 
 ###### Identifier Request
 The response body of an identifier retrieval request must be an array of objects with the blow key/value pair.
+
+`HTTP/1.1 200 OK`
 ```json
 [
     {
