@@ -2,7 +2,7 @@
 
 Use the API Proxy connector to invoke internal or third-party REST APIs to perform data subject access, deletion, or identifier retrieval requests.
 
-## ⚙️ Configuration
+## Configuration
 The API Proxy connector follows the standard connector schema outlined in the `connectors` root directory.
 
 ### Queries 
@@ -98,25 +98,29 @@ The API Proxy connector requires the following criteria of the system to be met.
 The connector supports static token-based authentication. An access token must be pre-generated to be used to 
 authenticate requests.
 
-### Request-Response
-##### Flow
+### Synchronous Flow
 
 The API must employ a synchronous response flow whereby all operations occur over a single open connection.
 
 Each request must be stateless and perform deletion, identifier, or data retrieval without any context of previously 
 executed queries.
 
-##### Response Format
+### Response Format
 
-###### Access Requests
+#### Access Requests
 
 The response body of an access request must be an array of objects. The value of each key can be of any datatype, including arrays and nested objects. Each object in the array will be converted into a separate file for your data subject.
 
 The environment variable `LOGLEVEL` can be adjusted to `DEBUG` to get more detailed feedback if responses are malformed. Be aware that this level of logging has the potential to expose sensitive data. 
 
 _Example Access Response:_
-
-`HTTP/1.1 200 OK`
+<table>
+<tr>
+<td> Status </td> <td> <code>HTTP/1.1 200 OK </code> </td>
+</tr>
+<tr>
+<td> Body </td>
+<td>
 
 ```json
 [
@@ -139,13 +143,24 @@ _Example Access Response:_
     }
 ]
 ```
+</td>
+</tr>
 
-###### Deletion Request
+</table>
+
+
+
+#### Deletion Requests
 The status code is the only signal used to determine if a deletion request was successful. A body can be included for logging purposes but will not propagate to the DataGrail platform.
 
-_Example Access Response:_
-
-`HTTP/1.1 200 OK`
+_Example Deletion Response:_
+<table>
+<tr>
+<td> Status </td> <td> <code>HTTP/1.1 200 OK </code> </td>
+</tr>
+<tr>
+<td> Body </td>
+<td>
 
 ```json
 {
@@ -153,19 +168,33 @@ _Example Access Response:_
     "message": "This response is for logging purposes"
 }
 ```
+</td>
+</tr>
+</table>
 
-###### Identifier Request
-The response body of an identifier retrieval request must be an array of objects with the blow key/value pair.
+#### Identifier Request
+The response body of an identifier retrieval request must be an array of objects with the below key/value pair.
 
-`HTTP/1.1 200 OK`
+<table>
+<tr>
+<td> Status </td> <td> <code>HTTP/1.1 200 OK </code> </td>
+</tr>
+<tr>
+<td> Body </td>
+<td>
+
 ```json
 [
     {
-      "<identifier category key>": "<identifier value>"
+      "user_id": "3ef6159b-a523-4ae4-a2b8-6b3ddedf1ab4"
     }
 ]
 ```
-The identifier category key is a snake_cased version of the identifier category that the identifier is assigned in the DataGrail application.
+</td>
+</tr>
+</table>
+
+**Note:** The identifier category key is a snake_cased version of the identifier category that the identifier is assigned in the DataGrail application.
 
 ### HTTP Methods
 All HTTP request methods are supported.
