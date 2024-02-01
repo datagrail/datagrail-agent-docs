@@ -3,12 +3,12 @@
 The DataGrail Agent configuration variables dictate the target systems the Agent should connect to, what operations should be performed, as well as other metadata to instruct Agent behavior. 
 
 To configure the DataGrail Agent properly, you will need to:
-1. Determine the system(s) you want the Agent to connect to, their associated connector(s) and the applicable queries.
-2. Create and store secrets for:
-   1. Each connector.
-   2. The OAuth Client Credentials for the Agent to authorize operations by the DataGrail application.
-   3. The callback token to authenticate the Agent's callbacks to the DataGrail platform.
-3. Set the environment variable(s).
+* Determine the system(s) you want the Agent to connect to, their associated connector(s) and the applicable queries. 
+* Create and store secrets for:
+  * Each connector. 
+  * The OAuth Client Credentials for the Agent to authorize operations by the DataGrail application. 
+  * The callback token to authenticate the Agent's callbacks to the DataGrail platform. 
+* Set the environment variable(s).
 
 ## Configuration
 
@@ -42,109 +42,77 @@ In your secrets manager, store your DataGrail-provided callback token. The raw c
 
 ```json
 {
-"token": "<your provided DataGrail token>"
+"token": "<your DataGrail provided token>"
 }
 ```
 ### Environment Variables
 
-The `DATAGRAIL_AGENT_CONFIG`
+| Name                     | Type   | Description                                                                                           |
+|--------------------------|--------|-------------------------------------------------------------------------------------------------------|
+| `DATAGRAIL_AGENT_CONFIG` | Object | JSON object that contains all metadata about connectors, credentials locations, cloud storage, etc.   |
 
-```dotenv
-DATAGRAIL_AGENT_CONFIG='{
-  "connections": [
-      {
-          "name": "<friendly name of the integration i.e. User DB (shown in the DataGrail application)>",
-          "uuid": "<create UUID>",
-          "capabilities": [<one or more of: "privacy/access|privacy/delete|privacy/identifiers”>],
-          "mode": "<live|test>",
-          "connector_type": "<connector type, e.g. Snowflake, SQLServer, SSH>",
-          "queries": {
-              "identifiers": {"<identifier name>": ["<identifier query>"]},
-              "access": ["<access queries>"],
-              "delete": ["<deletion queries>"]
-          },
-          "credentials_location": "<connector secret location>"
-      }
-  ],
-  "customer_domain": "<your datagrail customer domain>",
-  "datagrail_agent_credentials_location": "<Agent client ID/secret location>",
-  "datagrail_credentials_location": "<DataGrail API key location>",
-  "platform": {
-    "credentials_manager": {
-      "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP|AzureKeyVault>",
-      "options": {
-        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>, azure needs `secret_vault`",
-      }
-    },
-    "storage_manager": {
-      "provider": "<GCPCloudStore|AWSS3|AzureBlob|BackblazeB2>",
-      "options": {
-        "bucket": "<bucket name, required>",
-        "optional": "some modules may have additional required fields, e.g. GCP should have project_id: <project id>, Azure should have ["bucket", "project_id"]"
-      }
+
+#### `DATAGRAIL_AGENT_CONFIG` Object Schema:
+| Name                                   | Type   | Description                                                                                                                                                                                                                                                                     |
+|----------------------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `connections`                          | Array  | The connections array defines target systems that the agent should connect to and their capabilities.   It is also used to map and classify system results back into DataGrail. See the [Connectors](/connectors) documentation for specifics on each connector configurations. |
+| `customer_domain`                      | String | Your DataGrail-registered customer domain e.g. acme.datagrail.io                                                                                                                                                                                                                |
+| `datagrail_agent_credentials_location` | String | The location(e.g. AWS Secrets Manager ARN) of the [OAuth Client Credentials](#OAuth Client Credentials).                                                                                                                                                                        |
+| `datagrail_credentials_location`       | String | The location of the [DataGrail Callback Token](#DataGrail Callback Token) used to make callback requests to the DataGrail API.                                                                                                                                                  |
+| `platform`                             | Object | The secrets/credentials and cloud storage platforms used to deploy the Agent. The `platform` object requires two blocks: `credentials_manager` and `storage_manager`. Refer to their respective directories for configuration instructions                                      |
+| `redis_url`                            | String | Optional field for multi-node deployments.The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.                                                                                                 |
+
+_**Example Configuration:**_
+```json
+{
+    "connections": [
+        {
+            "name": "Users Database",
+            "uuid": "91e3f3a4-d669-46a8-ab76-af88ca790b62",
+            "capabilities": [
+                "privacy/access",
+                "privacy/delete",
+                "privacy/identifiers"
+            ],
+            "mode": "live",
+            "connector_type": "Postgres",
+            "queries": {
+                "identifiers": {
+                    "phone_number": [
+                        "SELECT phone_number FROM public.users WHERE email = %(email)s"
+                    ]
+                },
+                "access": [
+                    "CALL"
+                ],
+                "delete": [
+                    "<deletion queries>"
+                ]
+            },
+            "credentials_location": "<connector secret location>"
+        }
+    ],
+    "customer_domain": "<your datagrail customer domain>",
+    "datagrail_agent_credentials_location": "<Agent client ID/secret location>",
+    "datagrail_credentials_location": "<DataGrail API key location>",
+    "platform": {
+        "credentials_manager": {
+            "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP|AzureKeyVault>",
+            "options": {
+                "optional": "sadfsdf"
+            }
+        },
+        "storage_manager": {
+            "provider": "<GCPCloudStore|AWSS3|AzureBlob|BackblazeB2>",
+            "options": {
+                "bucket": "<bucket name, required>",
+                "optional": ""
+            }
+        }
     }
-  }
-  "redis_url": "connection string to remote redis instance (for multi-node deployments only)"
-}'
-
-#
+}
 ```
-
-
-#### DataGrail Agent Configuration Parameter Definitions
-
-**`connections`**
-
-The connections array defines target systems that the agent should connect to and their capabilities. It is also used to map and classify system results back into DataGrail.
-
-See the [Connector Configuration](/connectors) documentation for specifics on connector configurations.
-
-**`customer_domain`**
-
-Your DataGrail-registered customer domain.
-
-**`datagrail_agent_credentials_location`**
-
-The location (e.g. AWS Secrets Manager ARN) of the [DataGrail Agent Client ID/Client Secret](#DataGrail Agent Client ID/Client Secret) used by DataGrail to authenticate with the Agent.
-
-**`datagrail_credentials_location`**
-
-The location of the [DataGrail Callback Token](#DataGrail Callback Token) used to make callback requests to the DataGrail API. Your representative will provide you with the value of this credential.
-
-**`platform`**
-
-The secrets/credentials and cloud storage platforms used to deploy the
-Agent. `platform` requires two blocks:
-
-    "credentials_manager": {
-      "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP>",
-      "options": {
-        "<option name>": "some modules may have required fields, e.g. GCP should have project_id: <project id>",
-      }
-    },
-    "storage_manager": {
-      "provider": "<GCPCloudStore|AWSS3|AzureBlob|BackblazeB2>",
-      "options": {
-        "bucket": "<bucket name, required>",
-        "<option name>": "some modules may have additional required fields, e.g. GCP should have project_id: <project id>"
-      }
-    }
-
-
-1. `credentials_manager`
-   1. `provider`: name of class providing credentials access. The actual class name is e.g. CredentialsJSONFile, remove `Credentials` here, e.g. use `JSONFile`
-   2. `options`: hash/dictionary of options. Optional but some modules may have required fields, e.g. GCP should have "project_id": "<project id>"
-2. `storage_manager`
-    1. `provider`: name of class providing credentials access. The actual class name is e.g. CredentialsJSONFile, remove `Credentials` here, e.g. use `JSONFile`
-    2. `options`:
-       1. `bucket`: bucket name, required
-       2. hash/dictionary of options. Optional but some modules may have additional required fields, e.g. GCP should have "project_id": "<project id>"
-
-
-**`redis_url`**
-
-Optional field for multi-node deployments. The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.
-
+If deploying the Agent locally for testing, or not using Role Based Access Controls in your cloud provider, the following environment variables need set.
 #### Amazon Web Services
 
 | Name                     | Value                                                                                            |
