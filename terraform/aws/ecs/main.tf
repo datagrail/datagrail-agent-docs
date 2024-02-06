@@ -9,10 +9,6 @@ terraform {
   required_version = ">= 1.5.0"
 }
 
-provider "aws" {
-  profile = "admin-158714794554"
-}
-
 data "aws_vpc" "this" {
   id = var.vpc_id
 }
