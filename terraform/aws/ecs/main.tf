@@ -232,7 +232,7 @@ resource "aws_security_group_rule" "service_egress_private_s3_rule" {
   to_port           = 0
   protocol          = "-1"
   security_group_id = aws_security_group.service_security_group.id
-  cidr_blocks = data.aws_prefix_list.s3.cidr_blocks
+  cidr_blocks       = data.aws_prefix_list.s3.cidr_blocks
 }
 
 resource "aws_security_group" "vpc_endpoint" {
