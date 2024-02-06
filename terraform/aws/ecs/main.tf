@@ -9,6 +9,10 @@ terraform {
   required_version = ">= 1.5.0"
 }
 
+provider "aws" {
+  profile = "admin-158714794554"
+}
+
 data "aws_vpc" "this" {
   id = var.vpc_id
 }
@@ -30,6 +34,10 @@ data "aws_route_table" "private" {
 data "aws_route53_zone" "selected" {
   name         = var.hosted_zone_name
   private_zone = false
+}
+
+data "aws_prefix_list" "s3" {
+  prefix_list_id = aws_vpc_endpoint.s3[0].prefix_list_id
 }
 
 locals {
@@ -203,13 +211,32 @@ resource "aws_security_group_rule" "service_ingress_rule" {
   source_security_group_id = aws_security_group.load_balancer_security_group.id
 }
 
-resource "aws_security_group_rule" "service_egress_rule" {
+resource "aws_security_group_rule" "service_egress_datagrail_rule" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   security_group_id = aws_security_group.service_security_group.id
-  cidr_blocks       = concat(["52.36.177.91/32"], var.service_egress_cidr)
+  cidr_blocks       = ["52.36.177.91/32"]
+}
+
+resource "aws_security_group_rule" "service_egress_additional_rule" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.service_security_group.id
+  cidr_blocks       = var.service_egress_cidr
+}
+
+resource "aws_security_group_rule" "service_egress_private_s3_rule" {
+  count             = var.create_vpc_endpoints == true ? 1 : 0
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.service_security_group.id
+  cidr_blocks = data.aws_prefix_list.s3.cidr_blocks
 }
 
 resource "aws_security_group" "vpc_endpoint" {
