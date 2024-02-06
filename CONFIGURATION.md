@@ -83,35 +83,32 @@ _**Example Configuration:**_
                     ]
                 },
                 "access": [
-                    "CALL"
+                    "CALL dsr('access', %(email)s)"
                 ],
                 "delete": [
-                    "<deletion queries>"
+                    "CALL dsr('delete', %(email)s)"
                 ]
             },
-            "credentials_location": "<connector secret location>"
+            "credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.postgres"
         }
     ],
-    "customer_domain": "<your datagrail customer domain>",
-    "datagrail_agent_credentials_location": "<Agent client ID/secret location>",
-    "datagrail_credentials_location": "<DataGrail API key location>",
+    "customer_domain": "acme.datagrail.io",
+    "datagrail_agent_credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.datagrail-agent",
+    "datagrail_credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.datagrail",
     "platform": {
         "credentials_manager": {
-            "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP|AzureKeyVault>",
-            "options": {
-                "optional": "sadfsdf"
-            }
+            "provider": "AWSSecretsManager"
         },
         "storage_manager": {
-            "provider": "<GCPCloudStore|AWSS3|AzureBlob|BackblazeB2>",
+            "provider": "AWSS3",
             "options": {
-                "bucket": "<bucket name, required>",
-                "optional": ""
+                "bucket": "datagrail-results-bucket"
             }
         }
     }
 }
 ```
+### Optional Environment Variables
 If deploying the Agent locally for testing, or not using Role Based Access Controls in your cloud provider, the following environment variables need set.
 #### Amazon Web Services
 
@@ -129,7 +126,7 @@ If deploying the Agent locally for testing, or not using Role Based Access Contr
 |---------------------------------------|-----------------------------------------|
 | `GOOGLE_APPLICATION_CREDENTIALS_JSON` | Extracted Google credentials file JSON. |
 
-#### Azure
+#### Microsoft Azure
 | Name                  | Value                                                             |
 |-----------------------|-------------------------------------------------------------------|
 | `AZURE_TENANT_ID`     | The Azure Active Directory tenant (directory) ID.                 |

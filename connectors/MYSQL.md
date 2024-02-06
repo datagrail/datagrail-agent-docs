@@ -3,7 +3,7 @@
 #### Query Syntax and Parameter Binding
 All queries are query strings that should follow standard MySQL query syntax. 
 
-Identifiers are passed individually to queries and are bound to the variables in the operation. Variables are specified using the [pyformat](https://peps.python.org/pep-0249/#paramstyle) parameter style (e.g. `...WHERE name = %(name)s` where `name` is the identifier name such as`email`).
+Identifiers are passed individually to queries and are bound to the variables in the operation. Variables are specified using the [pyformat](https://peps.python.org/pep-0249/#paramstyle) parameter style (e.g. `...WHERE user_id = %(identifier)s` where `identifier` is the identifier name such as`email`).
 
 #### Best Practices
 For ease of maintainability and readability, it is suggested that the various queries be stored procedures. This allows for the underlying queries to be modified in MySQL without needing to modify the agent configuration, and for the query lists to be easily readable, especially in the case of complex joins. 

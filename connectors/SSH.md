@@ -1,6 +1,6 @@
 # SSH Connector
 
-The SSH connector can be used to create an SSH tunnel to a server and execute a command-line argument such as invoking a script to run access, deletion, and identifier retrieval operations.
+The SSH connector is used to create an SSH tunnel to a server and execute a command-line argument such as invoking a script to run access, deletion, and identifier retrieval operations.
 
 #### Secret Creation
 
