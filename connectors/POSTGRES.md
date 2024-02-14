@@ -1,4 +1,4 @@
-# SQL Server Connector
+# Postgres Connector
 
 #### Query Syntax and Parameter Binding
 All queries are query strings that should follow standard Postgres query syntax. 
