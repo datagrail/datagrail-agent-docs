@@ -18,7 +18,7 @@ Tags and other settings, please set as necessary.
 
 Copy the location of the secret (e.g. Amazon ARN) and insert it in as the value of the `credentials_location` key of the connector.
 
-STEP 2: Create the configuration
+_Example Configuration:_
 ```json
     {
         "name":"DSR Script",
