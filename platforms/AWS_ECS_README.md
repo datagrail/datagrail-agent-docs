@@ -6,14 +6,14 @@ Jump back to the [Main README](README.md)
 
 ### Sourcing the Agent Image
 
-The docker image for the internal systems agent is hosted in the DataGrail ECR repository, which you will be granted access to. You should use an ARN with version specified for retrieving your image such as:
+The Docker image for the internal systems agent is hosted in the DataGrail ECR repository, which you will be granted access to. You should use an ARN with version specified for retrieving your image such as:
 
 - `338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-agent:latest`
 - `338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-agent:v1`
 
 **Note:** If you use `latest`, you will install the latest version available anytime your service restarts which could have breaking changes. We recommend specifying an explicit version.
 
-You may optionally clone this image into your own docker repository (ECR or GCS Container Registry for example), or use it directly from our repository in your install.
+You may optionally clone this image into your own Docker repository (for example, AWS ECR or GCS Container Registry), or use it directly from our repository in your install.
 
 ### Running the Agent
 
@@ -112,7 +112,7 @@ If the target system uses query strings for processing requests, they should be 
 
 **credentials_location**
 
-An AWS Secrets manager ARN which should contain the credentials associated with the connection. The format of the credentials are specific to the target system, but are generally contained in a json-encoded dictionary stored in the secret. For examples specific to your system, see the specific connector documentation: [Snowflake](SNOWFLAKE.md), [SQL Server](SQL_SERVER.md), [SSH](SSH.md), etc.
+An AWS Secrets manager ARN which should contain the credentials associated with the connection. The format of the credentials are specific to the target system, but are generally contained in a json-encoded dictionary stored in the secret. For examples specific to your system, see the specific connector documentation: [Snowflake](../connectors/SNOWFLAKE.md), [SQL Server](../connectors/SQL_SERVER.md), [SSH](../connectors/SSH.md), etc.
 
 **customer_domain**
 

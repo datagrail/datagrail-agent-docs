@@ -15,7 +15,7 @@ access to. You should use an ARN with version specified for retrieving your imag
 **Note:** If you use `latest`, you will install the latest version available anytime your service restarts which could
 have breaking changes. We recommend specifying an explicit version.
 
-You may optionally clone this image into your own docker repository (ECR or GCS Container Registry for example), or use
+You may optionally clone this image into your own docker repository (for example, AWS ECR or GCS Container Registry), or use
 it directly from our repository in your install.
 
 ### Running the Agent
@@ -132,7 +132,7 @@ arrays. The queries must accept a single parameter to which the user identifier 
 A URL (e.g. to AzureKeyStore) which should point to the credentials associated with the connection. The format of the
 credentials are specific to the target system, but are generally contained in a json-encoded dictionary stored in the
 secret. For examples specific to your system, see the specific connector
-documentation: [Snowflake](SNOWFLAKE.md), [SQL Server](SQL_SERVER.md), [SSH](SSH.md), etc.
+documentation: [Snowflake](../connectors/SNOWFLAKE.md), [SQL Server](../connectors/SQL_SERVER.md), [SSH](../connectors/SSH.md), etc.
 
 **customer_domain**
 
