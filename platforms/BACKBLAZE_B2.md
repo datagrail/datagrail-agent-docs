@@ -2,7 +2,7 @@
 
 This will cover the specific settings for Backblaze B2 as a Storage Interface/Backend.
 
-Please see the general setup guide in [AGENT CONFIGURATION](../DATAGRAIL_AGENT_CONFIGURATION_README.md).
+Please see the general setup guide for the [Agent Configuration](../CONFIGURATION.md).
 
 Example platform configuration using AWS Secrets Manager for secrets, and Backblaze B2 as a storage backend.
 

@@ -57,9 +57,9 @@ In your secrets manager, store your DataGrail-provided callback token. The raw c
 |----------------------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `connections`                          | Array  | The connections array defines target systems that the agent should connect to and their capabilities.   It is also used to map and classify system results back into DataGrail. See the [Connectors](/connectors) documentation for specifics on each connector configurations. |
 | `customer_domain`                      | String | Your DataGrail-registered customer domain e.g. acme.datagrail.io                                                                                                                                                                                                                |
-| `datagrail_agent_credentials_location` | String | The location(e.g. AWS Secrets Manager ARN) of the [OAuth Client Credentials](#OAuth Client Credentials).                                                                                                                                                                        |
-| `datagrail_credentials_location`       | String | The location of the [DataGrail Callback Token](#DataGrail Callback Token) used to make callback requests to the DataGrail API.                                                                                                                                                  |
-| `platform`                             | Object | The secrets/credentials and cloud storage platforms used to deploy the Agent. The `platform` object requires two blocks: `credentials_manager` and `storage_manager`. Refer to their respective directories for configuration instructions                                      |
+| `datagrail_agent_credentials_location` | String | The location (e.g. AWS Secrets Manager ARN) of the [OAuth Client Credentials](#oauth-client-credentials).                                                                                                                                                                        |
+| `datagrail_credentials_location`       | String | The location of the [DataGrail Callback Token](#datagrail-callback-token) used to make callback requests to the DataGrail API.                                                                                                                                                  |
+| `platform`                             | Object | The secrets/credentials and cloud storage platforms used to deploy the Agent. The `platform` object requires two blocks: `credentials_manager` and `storage_manager`. See [platforms](platforms) for specific configuration instructions.                                      |
 | `redis_url`                            | String | Optional field for multi-node deployments.The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.                                                                                                 |
 
 _**Example Configuration:**_
@@ -112,7 +112,7 @@ _**Example Configuration:**_
     }
 }
 ```
-If deploying the Agent locally for testing, or not using Role Based Access Controls in your cloud provider, the following environment variables need set.
+If deploying the Agent locally for testing, or not using Role Based Access Controls in your cloud provider, the following environment variables need to be set.
 #### Amazon Web Services
 
 | Name                     | Value                                                                                            |

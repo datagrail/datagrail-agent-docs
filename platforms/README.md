@@ -24,27 +24,34 @@ This folder contains installation scripts and instructions for the common platfo
 
 ## Configuration
 
-[DataGrail Agent Configuration](../DATAGRAIL_AGENT_CONFIGURATION_README.md) - Configuration instructions for
-the `datagrail-agent`
+[DataGrail Agent Configuration](../CONFIGURATION.md) - Configuration instructions for `datagrail-rm-agent`
 
 ## Platforms
 
-[AWS ECS README](AWS_ECS_README.md) - Setup instructions for Amazon ECS.
+[AWS ECS](AWS_ECS_README.md) - Setup instructions for Amazon ECS
+
+[AZURE](AZURE_README.md) - Setup instructions for Microsoft Azure
+
+[GCS](GCS_README.md) - Setup instructions for Google Cloud Storage
+
+[BACKBLAZE](BACKBLAZE_B2.md) - Setup instructions for Backblaze B2
 
 ## Connectors
 
-[BigQuery](BIG_QUERY.md) - Instructions for setting up and configuring the BigQuery Connector
+[BigQuery](../connectors/BIG_QUERY.md) - Instructions for setting up and configuring the BigQuery Connector
 
-[MySQL](MYSQL.md) - Instructions for setting up and configuring the MySQL Connector
+[MySQL](../connectors/MYSQL.md) - Instructions for setting up and configuring the MySQL Connector
 
-[PostgreSQL](POSTGRES.md) - Instructions for setting up and configuring the PostgreSQL Connector
+[Oracle DB](../connectors/ORACLE_DB.md) - Instructions for setting up and configuring the Oracle DB Connector
 
-[Redshift](REDSHIFT.md) - Instructions for setting up and configuring the Redshift Connector
+[PostgreSQL](../connectors/POSTGRES.md) - Instructions for setting up and configuring the PostgreSQL Connector
 
-[Snowflake](SNOWFLAKE.md) - Instructions for setting up and configuring the Snowflake Connector
+[Redshift](../connectors/REDSHIFT.md) - Instructions for setting up and configuring the Redshift Connector
 
-[SQL Server](SQL_SERVER.md) - Instructions for setting up and configuring the SQL Server Connector
+[Snowflake](../connectors/SNOWFLAKE.md) - Instructions for setting up and configuring the Snowflake Connector
 
-[SSH Client](SSH.md) - Instructions for setting up and configuring the SSH Connector
+[SQL Server](../connectors/SQL_SERVER.md) - Instructions for setting up and configuring the SQL Server Connector
 
-[API Proxy](API_PROXY.md) - Instructions for setting up and configuring the API Proxy Connector
+[SSH Client](../connectors/SSH.md) - Instructions for setting up and configuring the SSH Connector
+
+[API Proxy](../connectors/API_PROXY.md) - Instructions for setting up and configuring the API Proxy Connector
