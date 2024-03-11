@@ -42,10 +42,11 @@ In your secrets manager, store your DataGrail-provided callback token. The raw c
 
 ```json
 {
-"token": "<your DataGrail provided token>"
+"token": "<your DataGrail-provided token>"
 }
 ```
 ### Environment Variables
+The Agent requires a single environment variable named `DATAGRAIL_AGENT_CONFIG` to dictate the target systems the Agent should connect to, what operations should be performed, as well as other metadata to instruct Agent behavior.
 
 | Name                     | Type   | Description                                                                                           |
 |--------------------------|--------|-------------------------------------------------------------------------------------------------------|
@@ -53,14 +54,14 @@ In your secrets manager, store your DataGrail-provided callback token. The raw c
 
 
 #### `DATAGRAIL_AGENT_CONFIG` Object Schema:
-| Name                                   | Type   | Description                                                                                                                                                                                                                                                                     |
-|----------------------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `connections`                          | Array  | The connections array defines target systems that the agent should connect to and their capabilities.   It is also used to map and classify system results back into DataGrail. See the [Connectors](/connectors) documentation for specifics on each connector configurations. |
-| `customer_domain`                      | String | Your DataGrail-registered customer domain e.g. acme.datagrail.io                                                                                                                                                                                                                |
+| Name                                   | Type   | Description                                                                                                                                                                                                                                                                      |
+|----------------------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `connections`                          | Array  | The connections array defines target systems that the agent should connect to and their capabilities.   It is also used to map and classify system results back into DataGrail. See the [Connectors](/connectors) documentation for specifics on each connector configurations.  |
+| `customer_domain`                      | String | Your DataGrail-registered customer domain e.g. acme.datagrail.io                                                                                                                                                                                                                 |
 | `datagrail_agent_credentials_location` | String | The location (e.g. AWS Secrets Manager ARN) of the [OAuth Client Credentials](#oauth-client-credentials).                                                                                                                                                                        |
-| `datagrail_credentials_location`       | String | The location of the [DataGrail Callback Token](#datagrail-callback-token) used to make callback requests to the DataGrail API.                                                                                                                                                  |
-| `platform`                             | Object | The secrets/credentials and cloud storage platforms used to deploy the Agent. The `platform` object requires two blocks: `credentials_manager` and `storage_manager`. See [platforms](platforms) for specific configuration instructions.                                      |
-| `redis_url`                            | String | Optional field for multi-node deployments.The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.                                                                                                 |
+| `datagrail_credentials_location`       | String | The location of the [DataGrail Callback Token](#datagrail-callback-token) used to make callback requests to the DataGrail API.                                                                                                                                                   |
+| `platform`                             | Object | The secrets/credentials and cloud storage platforms used to deploy the Agent. The `platform` object requires two blocks: `credentials_manager` and `storage_manager`. See [platforms](platforms) for specific configuration instructions.                                        |
+| `redis_url`                            | String | Optional field for multi-node deployments.The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.                                                                                                  |
 
 _**Example Configuration:**_
 ```json
@@ -83,30 +84,26 @@ _**Example Configuration:**_
                     ]
                 },
                 "access": [
-                    "CALL"
+                    "call dsr('access', %(email)s)" 
                 ],
                 "delete": [
-                    "<deletion queries>"
+                    "call dsr('delete', %(email)s)"
                 ]
             },
-            "credentials_location": "<connector secret location>"
+            "credentials_location": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datagrail-agent.postgres-xgcysj"
         }
     ],
-    "customer_domain": "<your datagrail customer domain>",
-    "datagrail_agent_credentials_location": "<Agent client ID/secret location>",
-    "datagrail_credentials_location": "<DataGrail API key location>",
+    "customer_domain": "acme.datagrail.io",
+    "datagrail_agent_credentials_location": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datagrail-agent-credentials-sklfyq",
+    "datagrail_credentials_location": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datagrail-credentials-qlcmne",
     "platform": {
         "credentials_manager": {
-            "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP|AzureKeyVault>",
-            "options": {
-                "optional": "sadfsdf"
-            }
+            "provider": "AWSSecretsManager"
         },
         "storage_manager": {
-            "provider": "<GCPCloudStore|AWSS3|AzureBlob|BackblazeB2>",
+            "provider": "AWSS3",
             "options": {
-                "bucket": "<bucket name, required>",
-                "optional": ""
+                "bucket": "acme-datagrail-reports"
             }
         }
     }
@@ -115,11 +112,11 @@ _**Example Configuration:**_
 If deploying the Agent locally for testing, or not using Role Based Access Controls in your cloud provider, the following environment variables need to be set.
 #### Amazon Web Services
 
-| Name                     | Value                                                                                            |
-|--------------------------|--------------------------------------------------------------------------------------------------|
-| `AWS_ACCESS_KEY_ID`      | AWS access key associated with an IAM account.                                                   |
-| `AWS_SECRET_ACCESS_KEY`  | ecret key associated with the access key. This is essentially the "password" for the access key. |
-| `AWS_REGION`             | The AWS Region to send the request to.                                                           |
+| Name                     | Value                                                                                             |
+|--------------------------|---------------------------------------------------------------------------------------------------|
+| `AWS_ACCESS_KEY_ID`      | AWS access key associated with an IAM account.                                                    |
+| `AWS_SECRET_ACCESS_KEY`  | Secret key associated with the access key. This is essentially the "password" for the access key. |
+| `AWS_REGION`             | The AWS Region to send the request to.                                                            |
 
 
 
