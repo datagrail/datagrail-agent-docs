@@ -7,7 +7,7 @@ The API Proxy connector follows the standard connector schema outlined in the `c
 
 ### Queries 
 
-**Note**: The API Proxy connector **requires** an additional `test` query (or queries) for health checks to determine liveness of the API. The endpoint must return a 200 status code to pass the health check.
+**Note**: The API Proxy connector **requires** an additional `test` query (or queries) for health checks to determine liveness of the API.
 
 All query objects can contain the below attributes:
 
@@ -18,7 +18,7 @@ All query objects can contain the below attributes:
 | `body` (optional)                 | string        | The body to include in the request. Set as necessary. Substitutions to be made with identifiers or values stored in your credential manager can be indicated with the variable name surrounded by curly brackets e.g.  `"body": "{{\"email\": \"{email}\"}}"`.  <br/><br/>   **Note:**  Double curly braces should be used to escape a curly brace to keep it in the payload of the request e.g. the above body would result in  `{"email": "<data subject email>"}` |
 | `verb` (required)                 | string        | The HTTP request method for the API call. All HTTP methods are supported.                                                                                                                                                                                                                                                                                                                                                                                            |
 | `verify_ssl` (required)           | string        | Determines whether to verify the SSL certificate of the URL. Accepted values are `"true"` or `"false"`.                                                                                                                                                                                                                                                                                                                                                              |
-| `valid_response_codes` (optional) | array(number) | An array of status codes that the Agent should consider successful. The default value is `[200]`.  <br/><br/>  **Note:** The Agent will not handle instances of a data subject not existing any differently than a successful access, deletion, or identifier retrieval request. If the API returns a 404, for example, when a data subject does not exist, 404 should be added to the array of valid response code.                                                 |
+| `valid_response_codes` (optional) | array(number) | An array of status codes that the Agent should consider successful. The default value is `[200]`.  <br/><br/>  **Note:** The Agent will not handle instances of a data subject not existing any differently than a successful access, deletion, or identifier retrieval request. If the API returns a 404, for example, when a data subject does not exist, `404` should be added to the `valid_response_codes` array.                                               |
 
 
 ### Credentials
@@ -84,7 +84,7 @@ _Example Configuration:_
             }
         ]
     },
-   "credentials_arn": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service"
+   "credentials_arn": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service-hfbdhy"
 }
 ```
 When complete, insert the above into the `connections` array in the `DATAGRAIL_AGENT_CONFIG` variable.
@@ -95,7 +95,7 @@ The API Proxy connector requires the following criteria of the system to be met.
 
 ### Authentication
 
-The connector supports static token-based authentication. An access token must be pre-generated to be used to 
+The API must use a static token-based authentication. An access token must be pre-generated to be used to 
 authenticate requests.
 
 ### Synchronous Flow
