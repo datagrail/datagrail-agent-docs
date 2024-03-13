@@ -19,7 +19,7 @@ The Application Load Balancer will need to have an existing TLS certificate atta
 The DataGrail Agent will have a subdomain in an existing Route53 hosted zone. If the Agent will be reachable at `datagrail-agent.acme.com`, ensure you have a hosted zone for `acme.com`.
 
 ### Configuration File
-The agent requires a configuration file. A sample of this configuration can be found in [config/datagrail-agent-config.json.sample](config/datagrail-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
+The agent requires a configuration file. A sample of this configuration can be found in [config/datagrail-rm-agent-config.json.sample](config/datagrail-rm-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
 
 ## Managed Resources
 ### VPC and Subnets
