@@ -157,7 +157,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "/etc/rm.conf"
       ],
       environment = [
-        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = local.raw_config }
+        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = file("config/rm-agent-config.json") }
       ]
       cpu              = 0
       workingDirectory = "/app"
