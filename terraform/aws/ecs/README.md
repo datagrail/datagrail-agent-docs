@@ -9,14 +9,18 @@ An existing VPC is required in this configuration. Endpoints to required AWS ser
 ### Subnets
 At least two public and one private subnet in the VPC above will need to exist and be created outside this Terraform configuration. An Application Load Balancer will be created in the public subnets to listen for incoming traffic which will forward traffic to the Agent in the private subnet. The private subnet must have a NAT Gateway in its route table so traffic can egress over the public internet back to DataGrail.
 
+### NAT Gateway
+
+One public subnet will need a NAT Gateway and the private subnet that the Agent resides in will need a route to it.
+
 ### Secrets
 Secrets for the DataGrail Agent will need to be stored prior to running the configuration. The token used in the callback to DataGrail (`datagrail_credentials_location`), the credentials used for DataGrail application to authenticate with the DataGrail Agent (`datagrail_agent_credentials_location`), and the credentials for each connector (`credentials_location`) must be created in AWS Secrets Manager outside this Terraform.
 
 ### TLS Certificate
 The Application Load Balancer will need to have an existing TLS certificate attached. This certificate should be for the domain that you plan on using to reach the agent.
 
-### Route53 Hosted Zone
-The DataGrail Agent will have a subdomain in an existing Route53 hosted zone. If the Agent will be reachable at `datagrail-agent.acme.com`, ensure you have a hosted zone for `acme.com`.
+### Route 53 Hosted Zone
+The DataGrail Agent will have a subdomain in an existing Route 53 hosted zone. If the Agent will be reachable at `datagrail-agent.acme.com`, ensure you have a hosted zone for `acme.com`.
 
 ### Configuration File
 The agent requires a configuration file. A sample of this configuration can be found in [config/datagrail-rm-agent-config.json.sample](config/datagrail-rm-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
