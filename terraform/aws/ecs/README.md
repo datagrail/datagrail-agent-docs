@@ -1,4 +1,4 @@
-# Deploy the DataGrail Internal Systems Agent with Terraform
+# Deploy the DataGrail Request Manager Agent with Terraform
 
 ## Prerequisites
 This Terraform manages resources specific to the Agent. Shared resources the Agent depends upon must be configured separately and manually specified in advance.
@@ -19,7 +19,7 @@ The Application Load Balancer will need to have an existing TLS certificate atta
 The DataGrail Agent will have a subdomain in an existing Route53 hosted zone. If the Agent will be reachable at `datagrail-agent.acme.com`, ensure you have a hosted zone for `acme.com`.
 
 ### Configuration File
-The agent requires a configuration file. A sample of this configuration can be found in [config/datagrail-agent-config.json.sample](config/datagrail-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
+The agent requires a configuration file. A sample of this configuration can be found in [config/datagrail-rm-agent-config.json.sample](config/datagrail-rm-agent-config.json.sample). Copy the contents into a file named `datagrail-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
 
 ## Managed Resources
 ### VPC and Subnets
@@ -54,7 +54,7 @@ The agent requires the below variables to be declared in your `.tfvars` file. Th
 | `region`              | `string` | The region where the agent will be deployed.                                                    |
 | `vpc_id`              | `string` | The ID of the VPC where the agent will be deployed.                                             |
 | `public_subnet_ids`   | `string` | The IDs of the public subnets for the Application Load Balancer to be deployed.                 |
-| `private_subnet_ids`  | `string` | The ID of the private subnet(s) to deploy the datagrail-agent ECS task(s).                      |
+| `private_subnet_ids`  | `string` | The ID of the private subnet to deploy the datagrail-rm-agent ECS task(s).                      |
 | `agent_image_uri`     | `string` | The URI of the agent image, with version tag, for the agent container.                          |
 | `tls_certificate_arn` | `string` | The ARN of the TLS certificate for the Application Load Balancer.                               |
 | `hosted_zone_name`    | `string` | The name of the Route53 hosted zone where the public DataGrail agent subdomain will be created. |
@@ -62,8 +62,8 @@ The agent requires the below variables to be declared in your `.tfvars` file. Th
 
 You can optionally overwrite the default variable values below by declaring them in your `.tfvars` file. 
 
-|                         Name | Type           | Default                               | Description                                                                                                                                                     |
-|-----------------------------:|----------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Name                         | Type           | Default                               | Description                                                                                                                                                     |
+|------------------------------|----------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `project_name`               | `string`       | `datagrail-agent`                     | The name of the project. The value will be prepended to resource names.                                                                                         |
 | `create_vpc_endpoints`       | `bool`         | `true`                                | Determines whether VPC Endpoints for ECR, S3, Cloudwatch, and optionally Secrets Manager, should be created.                                                    |
 | `desired_task_count`         | `number`       | `1`                                   | The desired number of tasks in the ECS service. If count is >1, you must use an external Redis Queue.                                                           |
@@ -75,3 +75,4 @@ You can optionally overwrite the default variable values below by declaring them
 | `agent_container_cpu`        | `number`       | `1024`                                | The CPU allotted for the agent container.                                                                                                                       |
 | `agent_container_memory`     | `number`       | `2048`                                | The memory allotted for the agent container.                                                                                                                    |
 | `agent_subdomain`            | `string`       | `datagrail-agent`                     | The subdomain to create the agent at.                                                                                                                           |
+| `tags`                       | `map(string)`  | `{}`                                  | Default tags to add to resources that support them.                                                                                                             |
