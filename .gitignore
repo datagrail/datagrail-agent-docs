@@ -156,3 +156,4 @@ mysql-data/
 *.tfstate.lock.info
 *.tfvars
 datagrail-agent-config.json
+rm-agent-config.json
