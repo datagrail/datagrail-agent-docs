@@ -1,4 +1,4 @@
-# Deploy the DataGrail Internal Systems Agent with Terraform
+# Deploy the DataGrail Request Manager Agent with Terraform
 
 ## Prerequisites
 This Terraform manages resources specific to the Agent. Shared resources the Agent depends upon must be configured separately and manually specified in advance.
@@ -54,7 +54,7 @@ The agent requires the below variables to be declared in your `.tfvars` file. Th
 | `region`              | `string` | The region where the agent will be deployed.                                                    |
 | `vpc_id`              | `string` | The ID of the VPC where the agent will be deployed.                                             |
 | `public_subnet_ids`   | `string` | The IDs of the public subnets for the Application Load Balancer to be deployed.                 |
-| `private_subnet_ids`  | `string` | The ID of the private subnet(s) to deploy the datagrail-agent ECS task(s).                      |
+| `private_subnet_ids`  | `string` | The ID of the private subnet to deploy the datagrail-rm-agent ECS task(s).                      |
 | `agent_image_uri`     | `string` | The URI of the agent image, with version tag, for the agent container.                          |
 | `tls_certificate_arn` | `string` | The ARN of the TLS certificate for the Application Load Balancer.                               |
 | `hosted_zone_name`    | `string` | The name of the Route53 hosted zone where the public DataGrail agent subdomain will be created. |
@@ -64,14 +64,15 @@ You can optionally overwrite the default variable values below by declaring them
 
 |                         Name | Type           | Default                               | Description                                                                                                                                                     |
 |-----------------------------:|----------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `project_name`               | `string`       | `datagrail-agent`                     | The name of the project. The value will be prepended to resource names.                                                                                         |
-| `create_vpc_endpoints`       | `bool`         | `true`                                | Determines whether VPC Endpoints for ECR, S3, Cloudwatch, and optionally Secrets Manager, should be created.                                                    |
-| `desired_task_count`         | `number`       | `1`                                   | The desired number of tasks in the ECS service. If count is >1, you must use an external Redis Queue.                                                           |
-| `cloudwatch_log_retention`   | `number`       | `30`                                  | The retention period (in days) of the agent's CloudWatch log group.                                                                                             |
+|               `project_name` | `string`       | `datagrail-agent`                     | The name of the project. The value will be prepended to resource names.                                                                                         |
+|       `create_vpc_endpoints` | `bool`         | `true`                                | Determines whether VPC Endpoints for ECR, S3, Cloudwatch, and optionally Secrets Manager, should be created.                                                    |
+|         `desired_task_count` | `number`       | `1`                                   | The desired number of tasks in the ECS service. If count is >1, you must use an external Redis Queue.                                                           |
+|   `cloudwatch_log_retention` | `number`       | `30`                                  | The retention period (in days) of the agent's CloudWatch log group.                                                                                             |
 | `load_balancer_ingress_cidr` | `list(string)` | `[]`                                  | Additional CIDR block(s) to add to the Application Load Balancer's inbound rules. By default, only DataGrail's IP address can reach the ALB.                    |
-| `service_egress_cidr`        | `list(string)` | `[]`                                  | Additional CIDR block(s) to add to the agent service outbound rules. By default, the only traffic allowed out of the service will be to DataGrail's IP address. |
-| `load_balancer_ssl_policy`   | `string`       | `ELBSecurityPolicy-TLS13-1-2-2021-06` | The name of the SSL policy for the load balancer's listener.                                                                                                    |
-| `cluster_id`                 | `string`       | `None`                                | The ID of an existing cluster to place the datagrail-agent into. If omitted, a cluster named `datagrail-agent-cluster` will be created.                         |
-| `agent_container_cpu`        | `number`       | `1024`                                | The CPU allotted for the agent container.                                                                                                                       |
-| `agent_container_memory`     | `number`       | `2048`                                | The memory allotted for the agent container.                                                                                                                    |
-| `agent_subdomain`            | `string`       | `datagrail-agent`                     | The subdomain to create the agent at.                                                                                                                           |
+|        `service_egress_cidr` | `list(string)` | `[]`                                  | Additional CIDR block(s) to add to the agent service outbound rules. By default, the only traffic allowed out of the service will be to DataGrail's IP address. |
+|   `load_balancer_ssl_policy` | `string`       | `ELBSecurityPolicy-TLS13-1-2-2021-06` | The name of the SSL policy for the load balancer's listener.                                                                                                    |
+|                 `cluster_id` | `string`       | `None`                                | The ID of an existing cluster to place the datagrail-agent into. If omitted, a cluster named `datagrail-agent-cluster` will be created.                         |
+|        `agent_container_cpu` | `number`       | `1024`                                | The CPU allotted for the agent container.                                                                                                                       |
+|     `agent_container_memory` | `number`       | `2048`                                | The memory allotted for the agent container.                                                                                                                    |
+|            `agent_subdomain` | `string`       | `datagrail-agent`                     | The subdomain to create the agent at.                                                                                                                           |
+|                       `tags` | `map(string)`  | `{}`                                  | Default tags to add to resources that support them.                                                                                                             |

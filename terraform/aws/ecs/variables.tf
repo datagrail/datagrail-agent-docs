@@ -44,7 +44,7 @@ variable "hosted_zone_name" {
 ############
 variable "project_name" {
   type        = string
-  default     = "datagrail-agent"
+  default     = "datagrail-rm-agent"
   description = "The name of the project. The value will be used in resource names as a prefix."
 }
 
@@ -70,18 +70,15 @@ variable "load_balancer_ingress_cidr" {
   type        = list(string)
   default     = []
   description = <<EOF
-  Additional CIDR block(s) to add to the Application Load Balancer's inbound rules.
+  Additional CIDR block(s) to add to the Application Load Balancer inbound rules.
   By default, only DataGrail's IP address can reach the ALB.
   EOF
 }
 
 variable "service_egress_cidr" {
   type        = list(string)
-  default     = []
-  description = <<EOF
-  Additional CIDR block(s) to add to the agent service outbound rules.
-  By default, the only traffic allowed out of the service will be to DataGrail's IP address.
-  EOF
+  default     = ["0.0.0.0/0"]
+  description = "CIDR blocks to add to the agent service outbound rules."
 }
 
 variable "load_balancer_ssl_policy" {
@@ -94,7 +91,7 @@ variable "cluster_id" {
   default     = ""
   description = <<EOF
   The ID of an existing cluster to place the datagrail-agent into.
-  If omitted, a cluster named `datagrail-agent-cluster` will be created.
+  If omitted, a cluster named `datagrail-rm-agent-cluster` will be created.
   EOF
 }
 
@@ -114,4 +111,10 @@ variable "agent_subdomain" {
   type        = string
   default     = "datagrail-agent"
   description = "The subdomain to create the agent at."
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Default tags to add to resources that support them."
 }

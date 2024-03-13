@@ -5,8 +5,13 @@ terraform {
       version = "~> 5.21.0"
     }
   }
-
   required_version = ">= 1.5.0"
+}
+
+provider "aws" {
+  default_tags {
+    tags = var.tags
+  }
 }
 
 data "aws_vpc" "this" {
@@ -33,12 +38,14 @@ data "aws_route53_zone" "selected" {
 }
 
 locals {
-  raw_config      = jsondecode(file("config/datagrail-agent-config.json"))
-  secrets_manager = local.raw_config.platform.credentials_manager.provider
-  bucket_name     = local.raw_config.platform.storage_manager.options.bucket
-  credentials = concat([local.raw_config.datagrail_agent_credentials_location],
-    [local.raw_config.datagrail_credentials_location],
-  [for connection in local.raw_config.connections : connection.credentials_location])
+  rm_agent_config                      = jsondecode(file("config/rm-agent-config.json"))
+  secrets_manager                      = local.rm_agent_config.platform.credentials_manager.provider
+  bucket_name                          = local.rm_agent_config.platform.storage_manager.options.bucket
+  datagrail_agent_credentials_location = local.rm_agent_config.datagrail_agent_credentials_location
+  datagrail_credentials_location       = local.rm_agent_config.datagrail_credentials_location
+  connections_credentials_locations = [
+    for connection in local.rm_agent_config.connections : connection.credentials_location
+  ]
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -90,7 +97,11 @@ data "aws_iam_policy_document" "agent_task_policy" {
       "secretsmanager:GetSecretValue"
     ]
 
-    resources = local.credentials
+    resources = concat(
+      [local.datagrail_credentials_location],
+      [local.datagrail_agent_credentials_location],
+      local.connections_credentials_locations
+    )
 
   }
 }
@@ -146,7 +157,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "/etc/rm.conf"
       ],
       environment = [
-        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = file("config/datagrail-agent-config.json") }
+        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = local.raw_config }
       ]
       cpu              = 0
       workingDirectory = "/app"
@@ -209,7 +220,7 @@ resource "aws_security_group_rule" "service_egress_rule" {
   to_port           = 0
   protocol          = "-1"
   security_group_id = aws_security_group.service_security_group.id
-  cidr_blocks       = concat(["52.36.177.91/32"], var.service_egress_cidr)
+  cidr_blocks       = var.service_egress_cidr
 }
 
 resource "aws_security_group" "vpc_endpoint" {
