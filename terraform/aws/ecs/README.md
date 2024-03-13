@@ -11,7 +11,7 @@ At least two public and one private subnet in the VPC above will need to exist a
 
 ### NAT Gateway
 
-The Agent, residing in a private subnet, needs access to the internet to call back to DataGrail. That private subnet will need to have a route to a NAT Gateway in a public subnet.
+One public subnet will need a NAT Gateway and the private subnet that the Agent resides in will need a route to it.
 
 ### Secrets
 Secrets for the DataGrail Agent will need to be stored prior to running the configuration. The token used in the callback to DataGrail (`datagrail_credentials_location`), the credentials used for DataGrail application to authenticate with the DataGrail Agent (`datagrail_agent_credentials_location`), and the credentials for each connector (`credentials_location`) must be created in AWS Secrets Manager outside this Terraform.
