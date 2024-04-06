@@ -1,4 +1,4 @@
-# Internal Systems Agent: Azure Configuration
+# Request Manager Agent: Azure Configuration
 
 Jump back to the [Main README](README.md)
 
@@ -6,7 +6,7 @@ Jump back to the [Main README](README.md)
 
 ### Sourcing the Agent Image
 
-The docker image for the internal systems agent is hosted in the DataGrail ECR repository, which you will be granted
+The Docker image for the Request Manager agent is hosted in the DataGrail ECR repository, which you will be granted
 access to. You should use an ARN with version specified for retrieving your image such as:
 
 - `datagrailagent.azurecr.io/datagrail-agent:latest`
@@ -15,7 +15,7 @@ access to. You should use an ARN with version specified for retrieving your imag
 **Note:** If you use `latest`, you will install the latest version available anytime your service restarts which could
 have breaking changes. We recommend specifying an explicit version.
 
-You may optionally clone this image into your own docker repository (for example, AWS ECR or GCS Container Registry), or use
+You may optionally clone this image into your own Docker repository (for example, AWS ECR or GCP Artifact Registry), or use
 it directly from our repository in your install.
 
 ### Running the Agent
@@ -58,7 +58,7 @@ DATAGRAIL_AGENT_CONFIG='{
           "connector_type": "<connector type, e.g. Snowflake, SQLServer, SSH>",
           "queries": {
               "access": ["<access query>"],
-              "delete": ["<deletion auery"]
+              "delete": ["<deletion query"]
           },
           "credentials_location": "<credentials location>"
       }
@@ -70,7 +70,7 @@ DATAGRAIL_AGENT_CONFIG='{
     "credentials_manager": {
       "provider": "<AzureKeyVault|AWSSSMParameterStore|AWSSecretsManager|JSONFile>",
       "options": {
-        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>, azure needs `secret_vault`",
+        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>, azure needs `secret_vault`"
       }
     },
     "storage_manager": {
@@ -80,7 +80,7 @@ DATAGRAIL_AGENT_CONFIG='{
         "optional": "some modules may have additional required fields, e.g. GCP/Azure should have project_id: <project id>"
       }
     }
-  }
+  },
   "redis_url": "connection string to remote redis instance (for multi-node deployments only)"
 }'
 
@@ -151,7 +151,7 @@ will provide you with the value for this credential.
 
 The cloud provider used to deploy the `datagrail-agent`. `platform` requires two fields:
 
-`credentials_manager` - settings for platform/credentials; see [credentials](../platforms/credentials)
+`credentials_manager` - settings for platform/credentials
 
 `storage_manager` - information to access storage bucket used to upload results for privacy requests
 

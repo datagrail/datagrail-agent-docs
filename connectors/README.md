@@ -2,7 +2,7 @@
 
 ## Overview
 
-The DataGrail Agent establishes connections to internal systems through a set of componentized integrations. DataGrail provides and is constantly expanding a standard set of integrations for use with common systems (databases, APIs, etc), however, the DataGrail Agent is designed to be extended through the use of custom components to encompass any needs specific to your organization. These are developed as Python modules that the DataGrail Agent will automatically discover and connect to using the defined configurations.
+The DataGrail Request Manager Agent establishes connections to internal systems through a set of componentized integrations. DataGrail provides and is constantly expanding a standard set of integrations for use with common systems (databases, APIs, etc), however, the DataGrail Agent is designed to be extended through the use of custom components to encompass any needs specific to your organization. These are developed as Python modules that the DataGrail Agent will automatically discover and connect to using the defined configurations.
 
 ## Setup
 
