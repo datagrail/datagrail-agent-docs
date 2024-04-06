@@ -1,17 +1,12 @@
 # Google Cloud Platform (GCP)
 
 - [Running the Agent](#running-the-agent)
-  - [Sourcing the Agent Image](#sourcing-the-agent-image)
-  - [Deployment and Scaling](#deployment-and-scaling)
-  - [Environment Variables](#environment-variables)
-- [Agent Configuration Variable](#agent-configuration-variable)
-  - [Credentials Manager](#credentials-manager)
-  - [Storage Manager](#storage-manager)
-  - [Example Agent Configuration](#example-agent-configuration)
+- [Agent Platform Configuration](#agent-platform-configuration)
+- [Example Configuration](#example-configuration)
 
 ## Running the Agent
 
-### Sourcing the Agent Image
+### Sourcing the Image
 
 The Docker image for the Request Manager agent is hosted in a DataGrail Artifact Registry repository, which you will be granted access. When retrieving the image, you should specify a version tag. For example:
 
@@ -22,7 +17,7 @@ The Docker image for the Request Manager agent is hosted in a DataGrail Artifact
 
 You may optionally clone this image into your own Docker repository (for example, AWS ECR or GCP Artifact Registry), or use it directly from our repository in your install.
 
-### Deployment and Scaling
+### Deployments
 
 We recommend using rolling deployments with a 100% minimum active percentage, and a maximum of 200%. This will avoid any downtime during releases, and also help alleviate any request congestion should many requests need to be serviced in parallel. We recommend using rolling (at a maximum of 50% per phase) or blue/green deployment strategies. It’s critical that your release configuration gives active inbound HTTPS requests a reasonable period (two minutes recommended) to complete before halting the container.
 
@@ -35,25 +30,20 @@ The agent requires the following environment variables:
 | `DATAGRAIL_AGENT_CONFIG`              | Object | Dictates target systems the Agent should connect to, what operations should be performed, and other metadata to instruct Agent behavior |
 | `GOOGLE_APPLICATION_CREDENTIALS_JSON` | Object | Valid IAM service account JSON key with read access to Secret Manager and read/write access to your configured results bucket |
 
-## Agent Configuration Variable
+## Agent Platform Configuration
 
-When defining the [agent configuration variable](../CONFIGURATION.md), set the following `platform` values:
-
-| Platform              | Provider          | Service        | Purpose |
-|-----------------------|-------------------|-----------------|---------|
-| `credentials_manager` | **GCP**           | Secrets Manager | Stores the credentials for the agent and connections |
-| `storage_manager`     | **GCPCloudStore** | Cloud Storage   | Uploading the results of privacy requests |
+Set the following `platform` values in your [agent configuration](../CONFIGURATION.md) environment variable.
 
 ### Credentials Manager
 
-Set the following `credentials_manager` object values to use Google Cloud Secrets Manager:
+To use Google Cloud Secrets Manager for storing agent and connection credentials, set the following `credentials_manager` values:
 
 | Key                  | Value          | Description |
 |----------------------|----------------|-------------|
-| `provider`           | GCP            | Agent will use Secrets Manager |
-| `options.project_id` | \<project id\> | Google Cloud Project ID of Secrets Manager |
+| `provider`           | GCP            | Agent will use Google Cloud Secrets Manager |
+| `options.project_id` | \<project id\> | Google Cloud Project ID |
 
-#### Example - Credentials Manager
+**Example:**
 
 ```json
 "credentials_manager": {
@@ -66,17 +56,17 @@ Set the following `credentials_manager` object values to use Google Cloud Secret
 
 ### Storage Manager
 
-Set the following `storage_manager` object values to use Google Cloud Storage for storing the results of privacy results:
+To use Google Cloud Storage for storing the results of privacy requests, set the following `storage_manager` values:
 
 **Note:** Use the same `bucket` name as configured on the DataGrail platform
 
 | Key                  | Value           | Description |
 |----------------------|-----------------|-------------|
-| `provider`           | GCPCloudStore   | Agent will use Cloud Storage |
-| `options.bucket`     | \<bucket name\> | Bucket name that stores the results of privacy results |
-| `options.project_id` | \<project id\>  | Google Cloud Project ID of the storage bucket |
+| `provider`           | GCPCloudStore   | Agent will use Google Cloud Storage |
+| `options.bucket`     | \<bucket name\> | Name of the bucket storing the results |
+| `options.project_id` | \<project id\>  | Google Cloud Project ID |
 
-#### Example - Storage Manager
+**Example:**
 
 ```json
 "storage_manager": {
@@ -88,9 +78,9 @@ Set the following `storage_manager` object values to use Google Cloud Storage fo
 }
 ```
 
-### Example Agent Configuration
+## Example Configuration
 
-The following is an example of the `DATAGRAIL_AGENT_CONFIG` environment variable using GCP as the platform for managing both storage and credentials:
+This example `DATAGRAIL_AGENT_CONFIG` environment variable uses GCP as the platform for managing credentials and storage:
 
 ```json
 {
