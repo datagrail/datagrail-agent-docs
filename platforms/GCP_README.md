@@ -1,4 +1,4 @@
-# Google Cloud Platform (GCP)
+# Request Manager Agent: Google Cloud Configuration
 
 - [Running the Agent](#running-the-agent)
 - [Agent Platform Configuration](#agent-platform-configuration)
@@ -8,7 +8,7 @@
 
 ### Sourcing the Image
 
-The Docker image for the Request Manager agent is hosted in a DataGrail Artifact Registry repository, which you will be granted access. When retrieving the image, you should specify a version tag. For example:
+The Docker image for the Request Manager agent is hosted in the DataGrail Artifact Registry repository, which you will be granted access. When retrieving the image, you should specify a version tag. For example:
 
 - `us-west1-docker.pkg.dev/datagrail-202106/datagrail-rm-agent/datagrail-rm-agent:latest`
 - `us-west1-docker.pkg.dev/datagrail-202106/datagrail-rm-agent/datagrail-rm-agent:v0.8.6`
@@ -27,12 +27,12 @@ The agent requires the following environment variables:
 
 | Name                                  | Type   | Description |
 |---------------------------------------|--------|-------------|
-| `DATAGRAIL_AGENT_CONFIG`              | Object | Dictates target systems the Agent should connect to, what operations should be performed, and other metadata to instruct Agent behavior |
+| `DATAGRAIL_AGENT_CONFIG`              | Object | Dictates target systems the Agent should connect to, what operations should be performed, and other metadata to instruct Agent behavior. For more information, see [Configuration](../CONFIGURATION.md) |
 | `GOOGLE_APPLICATION_CREDENTIALS_JSON` | Object | Valid IAM service account JSON key with read access to Secret Manager and read/write access to your configured results bucket |
 
 ## Agent Platform Configuration
 
-Set the following `platform` values in your [agent configuration](../CONFIGURATION.md) environment variable.
+Set the following `platform` values in the `DATAGRAIL_AGENT_CONFIG` environment variable.
 
 ### Credentials Manager
 
