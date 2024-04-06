@@ -1,19 +1,5 @@
 # Google Cloud Platform (GCP)
 
-<!-- ##### Table of Contents  
-[Headers](#headers)  
-[Emphasis](#emphasis)  
-...snip...    
-<a name="headers"/>
-## Headers -->
-
-<!-- Google Cloud Platform (GCP) can do the following:
-
-- [Running the Agent on GCP](#running-the-agent)
-- [Using GCP for Cloud Storage and Managing Secrets](#agent-configuration-variable)
-
------- -->
-
 - [Running the Agent](#running-the-agent)
   - [Sourcing the Agent Image](#sourcing-the-agent-image)
   - [Deployment and Scaling](#deployment-and-scaling)
