@@ -1,8 +1,0 @@
-region                     = "us-west-2"
-vpc_id                     = "vpc-XXXXXXXXXXXXXXXXX"
-public_subnet_ids          = ["subnet-XXXXXXXXXXXXXXXXX", "subnet-XXXXXXXXXXXXXXXXX"]
-private_subnet_id          = "subnet-XXXXXXXXXXXXXXXXX"
-agent_image_uri            = "XXXXXXXXXXXX.dkr.ecr.us-west-2.amazonaws.com/datagrail-rm-agent:v0.8.6"
-tls_certificate_arn        = "arn:aws:acm:us-west-2:XXXXXXXXXXXX:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
-load_balancer_ingress_cidr = ["0.0.0.0/0"]
-hosted_zone_name = "acme.com"
