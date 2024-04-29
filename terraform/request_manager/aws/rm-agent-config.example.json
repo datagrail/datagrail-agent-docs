@@ -1,0 +1,37 @@
+{
+  "connections": [
+    {
+      "name": "Snowflake",
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "capabilities": [
+        "privacy/access",
+        "privacy/delete"
+      ],
+      "mode": "live",
+      "connector_type": "Snowflake",
+      "queries": {
+        "access": [
+          "SELECT * from DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s LIMIT 10"
+        ],
+        "delete": [
+          "DELETE FROM DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s"
+        ]
+      },
+      "credentials_location": "<CREDENTIALS LOCATION>"
+    }
+  ],
+  "customer_domain": "acme.datagrail.io",
+  "datagrail_agent_credentials_location": "<DATAGRAIL AGENT CREDENTIALS LOCATION>",
+  "datagrail_credentials_location": "<DATAGRAIL CREDENTIALS LOCATION>",
+  "platform": {
+    "storage_manager": {
+      "provider": "AWSS3",
+      "options": {
+        "bucket": "<BUCKET NAME>"
+      }
+    },
+    "credentials_manager": {
+      "provider": "AWSSecretsManager"
+    }
+  }
+}

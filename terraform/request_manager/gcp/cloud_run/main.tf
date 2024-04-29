@@ -24,25 +24,25 @@ provider "google-beta" {
 
 resource "google_service_account" "datagrail-rm-agent-service-account" {
   account_id   = var.name
-  project = var.project_id
-  display_name = "Service account for the datagrail-rm-agent"
+  project      = var.project_id
+  display_name = "DataGrail Request Manager Agent"
 }
 
 resource "google_project_iam_member" "storage-object-creator" {
-  role = "roles/storage.objectCreator"
-  member = "serviceAccount:${google_service_account.datagrail-rm-agent-service-account.email}"
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.datagrail-rm-agent-service-account.email}"
   project = var.project_id
 }
 
-resource "google_project_iam_member" "secret-manager-viewer" {
-  role = "roles/secretmanager.viewer"
-  member = "serviceAccount:${google_service_account.datagrail-rm-agent-service-account.email}"
+resource "google_project_iam_member" "secret-manager-accessor" {
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.datagrail-rm-agent-service-account.email}"
   project = var.project_id
 }
 
 resource "google_project_iam_member" "artifact-registry-service-agent" {
-  role = "roles/artifactregistry.serviceAgent"
-  member = "serviceAccount:${google_service_account.datagrail-rm-agent-service-account.email}"
+  role    = "roles/artifactregistry.serviceAgent"
+  member  = "serviceAccount:${google_service_account.datagrail-rm-agent-service-account.email}"
   project = var.project_id
 }
 
@@ -79,53 +79,53 @@ module "lb-http" {
 resource "google_cloud_run_v2_service" "datagrail-rm-agent" {
   name     = "${var.name}-service"
   location = var.region
-  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
-      service_account = google_service_account.datagrail-rm-agent-service-account.email
+    service_account = google_service_account.datagrail-rm-agent-service-account.email
 
-      containers {
-        name  = var.name
-        image = var.agent_image
+    containers {
+      name  = var.name
+      image = var.agent_image
 
-        ports {
-          container_port = 80
-        }
-        command = ["supervisord", "-n", "-c", "/etc/rm.conf"]
+      ports {
+        container_port = 80
+      }
+      command = ["supervisord", "-n", "-c", "/etc/rm.conf"]
 
-        startup_probe {
-          initial_delay_seconds = 1
-          timeout_seconds       = 5
-          period_seconds        = 30
-          failure_threshold     = 3
-          http_get {
-            port = 80
-            path = "/docs"
-          }
-        }
-
-        env {
-          name  = "DATAGRAIL_AGENT_CONFIG"
-          value = file("../../rm-agent-config.json")
-        }
-
-        resources {
-          limits = {
-            cpu    = "2.0"
-            memory = "2048Mi"
-          }
+      startup_probe {
+        initial_delay_seconds = 1
+        timeout_seconds       = 5
+        period_seconds        = 30
+        failure_threshold     = 3
+        http_get {
+          port = 80
+          path = "/docs"
         }
       }
+
+      env {
+        name  = "DATAGRAIL_AGENT_CONFIG"
+        value = file("../../rm-agent-config.json")
+      }
+
+      resources {
+        limits = {
+          cpu    = "2.0"
+          memory = "2048Mi"
+        }
+      }
+    }
     annotations = {
-        "autoscaling.knative.dev/maxScale"    = "1",
-        "autoscaling.knative.dev/minScale"    = "1",
-        "autoscaling.knative.dev/client-name" = "terraform",
-      }
+      "autoscaling.knative.dev/maxScale"    = "1",
+      "autoscaling.knative.dev/minScale"    = "1",
+      "autoscaling.knative.dev/client-name" = "terraform",
+    }
   }
 
   traffic {
-    type = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
-    percent         = 100
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+    percent = 100
   }
 }
 
@@ -140,9 +140,9 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg" {
 }
 
 resource "google_cloud_run_service_iam_member" "public-access" {
-  location    = google_cloud_run_v2_service.datagrail-rm-agent.location
-  project = google_cloud_run_v2_service.datagrail-rm-agent.project
-  service     = google_cloud_run_v2_service.datagrail-rm-agent.name
+  location = google_cloud_run_v2_service.datagrail-rm-agent.location
+  project  = google_cloud_run_v2_service.datagrail-rm-agent.project
+  service  = google_cloud_run_v2_service.datagrail-rm-agent.name
   role     = "roles/run.invoker"
   member   = "allUsers"
 }

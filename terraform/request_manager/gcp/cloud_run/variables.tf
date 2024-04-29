@@ -4,8 +4,8 @@ variable "project_id" {
 
 variable "name" {
   description = "Name for the forwarding rule and prefix for supping resources."
-  type = string
-  default = "datagrail-rm-agent"
+  type        = string
+  default     = "datagrail-rm-agent"
 }
 
 variable "region" {
@@ -26,6 +26,6 @@ variable "domain" {
 
 variable "agent_image" {
   description = "The datagrail-rm-agent image in Artifact Registry to use."
-  type = string
+  type        = string
 }
 
