@@ -1,4 +1,5 @@
 region      = "us-west1"
+name        = "example-datagrail-rm-agent"
 project_id  = "my-project"
 ssl         = true
 domain      = "datagrail-rm-agent.example.com"
