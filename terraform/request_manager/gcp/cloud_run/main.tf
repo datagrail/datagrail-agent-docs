@@ -129,7 +129,7 @@ resource "google_cloud_run_v2_service" "datagrail-rm-agent" {
   }
 }
 
-resource "google_compute_region_network_endpoint_group" "serverless_neg" {
+resource "google_compute_region_network_endpoint_group" "datagrail-rm-agent-serverless-neg" {
   provider              = google-beta
   name                  = "serverless-neg"
   network_endpoint_type = "SERVERLESS"
