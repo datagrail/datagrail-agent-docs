@@ -106,7 +106,7 @@ resource "google_cloud_run_v2_service" "datagrail-rm-agent" {
 
       env {
         name  = "DATAGRAIL_AGENT_CONFIG"
-        value = file("../../rm-agent-config.json")
+        value = file("../rm-agent-config.json")
       }
 
       resources {
