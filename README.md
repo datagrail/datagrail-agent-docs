@@ -39,4 +39,4 @@ Internal systems change over time and it's easy to update the Agent to encompass
 
 ## Quickstart
 * **[Learn how to configure the Agent](/CONFIGURATION.md)**
-* **[Use Terraform to deploy the Agent in AWS](/terraform/aws/ecs)**
+* **[Use Terraform to deploy the Agent in AWS](/terraform/request_managaer/aws/ecs)**
