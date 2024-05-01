@@ -11,7 +11,7 @@
       "connector_type": "Snowflake",
       "queries": {
         "access": [
-          "SELECT * from DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s LIMIT 10"
+          "SELECT * from DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s"
         ],
         "delete": [
           "DELETE FROM DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s"
