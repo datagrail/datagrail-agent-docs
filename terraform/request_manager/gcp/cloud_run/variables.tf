@@ -3,7 +3,7 @@ variable "project_id" {
 }
 
 variable "name" {
-  description = "Name for the forwarding rule and prefix for supping resources."
+  description = "Name for the forwarding rule and prefix for supporting resources."
   type        = string
   default     = "datagrail-rm-agent"
 }
