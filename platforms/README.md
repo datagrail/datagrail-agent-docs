@@ -32,7 +32,7 @@ This folder contains installation scripts and instructions for the common platfo
 
 [AZURE](AZURE_README.md) - Setup instructions for Microsoft Azure
 
-[GCS](GCS_README.md) - Setup instructions for Google Cloud Storage
+[GCP](GCP_README.md) - Setup instructions for Google Cloud
 
 [BACKBLAZE](BACKBLAZE_B2.md) - Setup instructions for Backblaze B2
 

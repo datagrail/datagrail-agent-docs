@@ -27,7 +27,7 @@
     "credentials_manager": {
       "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|GCP>",
       "options": {
-        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>",
+        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>"
       }
     },
     "storage_manager": {

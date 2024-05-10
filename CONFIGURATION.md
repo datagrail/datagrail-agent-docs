@@ -61,7 +61,7 @@ The Agent requires a single environment variable named `DATAGRAIL_AGENT_CONFIG` 
 | `datagrail_agent_credentials_location` | String | The location (e.g. AWS Secrets Manager ARN) of the [OAuth Client Credentials](#oauth-client-credentials).                                                                                                                                                                        |
 | `datagrail_credentials_location`       | String | The location of the [DataGrail Callback Token](#datagrail-callback-token) used to make callback requests to the DataGrail API.                                                                                                                                                   |
 | `platform`                             | Object | The secrets/credentials and cloud storage platforms used to deploy the Agent. The `platform` object requires two blocks: `credentials_manager` and `storage_manager`. See [platforms](platforms) for specific configuration instructions.                                        |
-| `redis_url`                            | String | Optional field for multi-node deployments.The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.                                                                                                  |
+| `redis_url`                            | String | Optional field for multi-node deployments. The Agent needs persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a Redis instance.                                                                                                  |
 
 _**Example Configuration:**_
 ```json
