@@ -27,7 +27,7 @@
     "storage_manager": {
       "provider": "AWSS3",
       "options": {
-        "bucket": "<BUCKET NAME>"
+        "bucket": "acme-datagrail-reports"
       }
     },
     "credentials_manager": {
