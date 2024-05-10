@@ -154,6 +154,9 @@ mysql-data/
 *.tfstate.backup
 *.tfstate
 *.tfstate.lock.info
+.terraform.lock.hcl
 *.tfvars
+!*.example.tfvars
 datagrail-agent-config.json
 rm-agent-config.json
+rdd-agent-config.json

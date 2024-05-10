@@ -1,0 +1,41 @@
+{
+  "connections": [
+    {
+      "name": "Snowflake",
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "capabilities": [
+        "privacy/access",
+        "privacy/delete"
+      ],
+      "mode": "live",
+      "connector_type": "Snowflake",
+      "queries": {
+        "access": [
+          "SELECT * from DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s"
+        ],
+        "delete": [
+          "DELETE FROM DATAGRAIL_AGENT.CUSTOMER C WHERE C.EMAIL = %(email)s"
+        ]
+      },
+      "credentials_location": "snowflake-credentials"
+    }
+  ],
+  "customer_domain": "acme.datagrail.io",
+  "datagrail_agent_credentials_location": "datagrail-rm-agent-credentials",
+  "datagrail_credentials_location": "datagrail-credentials",
+  "platform": {
+    "storage_manager": {
+      "provider": "GCPCloudStore",
+      "options": {
+        "bucket": "acme-datagrail-reports",
+        "project_id": "datagrail-rm-agent"
+      }
+    },
+    "credentials_manager": {
+      "provider": "GCP",
+      "options": {
+        "project_id": "datagrail-rm-agent"
+      }
+    }
+  }
+}
