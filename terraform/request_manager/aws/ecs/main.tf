@@ -38,7 +38,7 @@ data "aws_route53_zone" "selected" {
 }
 
 locals {
-  rm_agent_config                      = jsondecode(file("config/rm-agent-config.json"))
+  rm_agent_config                      = jsondecode(file("../rm-agent-config.json"))
   secrets_manager                      = local.rm_agent_config.platform.credentials_manager.provider
   bucket_name                          = local.rm_agent_config.platform.storage_manager.options.bucket
   datagrail_agent_credentials_location = local.rm_agent_config.datagrail_agent_credentials_location
