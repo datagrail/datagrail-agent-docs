@@ -21,7 +21,7 @@ variable "public_subnet_ids" {
 
 variable "private_subnet_id" {
   type        = string
-  description = "The ID(s) of the private subnet(s) to put the datagrail-agent ECS task(s) into."
+  description = "The ID(s) of the private subnet(s) to put the datagrail-rm-agent ECS task(s) into."
 }
 
 variable "agent_image_uri" {
@@ -90,7 +90,7 @@ variable "cluster_id" {
   type        = string
   default     = ""
   description = <<EOF
-  The ID of an existing cluster to place the datagrail-agent into.
+  The ID of an existing cluster to place the datagrail-rm-agent into.
   If omitted, a cluster named `datagrail-rm-agent-cluster` will be created.
   EOF
 }
@@ -109,7 +109,7 @@ variable "agent_container_memory" {
 
 variable "agent_subdomain" {
   type        = string
-  default     = "datagrail-agent"
+  default     = "datagrail-rm-agent"
   description = "The subdomain to create the agent at."
 }
 

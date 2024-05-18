@@ -114,6 +114,7 @@ ENV/
 env.bak/
 venv.bak/
 datagrail-agent.env
+datagrail-rm-agent.env
 
 # Spyder project settings
 .spyderproject
@@ -158,5 +159,6 @@ mysql-data/
 *.tfvars
 !*.example.tfvars
 datagrail-agent-config.json
+datagrail-rm-agent-config.json
 rm-agent-config.json
 rdd-agent-config.json
