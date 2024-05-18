@@ -19,7 +19,7 @@ Create a new secret with the users' credentials in JSON format in your preferred
     "password": "<DB password>",
     "account": "<Snowflake Account, e.g. EXA*****>",
     "warehouse": "<Snowflake Warehouse, e.g. COMPUTE_WH>",
-    "database": "<Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>",
+    "database": "<Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>"
 }
 ```
 Tags and other settings, please set as necessary.

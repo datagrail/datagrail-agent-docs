@@ -9,7 +9,7 @@ Create a new secret in JSON format in your preferred credentials manager with th
     "password": "<DB password>",
     "server": "<server domain name or IP address>",
     "port": "<port, defaults to 1433>",
-    "database": "<DB, e.g. BikeStores>",
+    "database": "<DB, e.g. BikeStores>"
 }
 ```
 Tags and other settings, please set as necessary.
