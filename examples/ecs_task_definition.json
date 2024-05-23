@@ -38,7 +38,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-agent:1",
+      "image": "338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-rm-agent:v0.8.6",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -64,12 +64,12 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "datagrail-agent"
+      "name": "datagrail-rm-agent"
     }
   ],
   "placementConstraints": [],
   "memory": "4096",
-  "family": "datagrail-agent",
+  "family": "datagrail-rm-agent",
   "requiresCompatibilities": [
     "FARGATE"
   ],

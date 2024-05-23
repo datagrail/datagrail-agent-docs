@@ -84,7 +84,7 @@ _Example Configuration:_
             }
         ]
     },
-   "credentials_arn": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service-hfbdhy"
+   "credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service-hfbdhy"
 }
 ```
 When complete, insert the above into the `connections` array in the `DATAGRAIL_AGENT_CONFIG` variable.

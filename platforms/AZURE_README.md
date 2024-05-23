@@ -9,8 +9,8 @@ Jump back to the [Main README](README.md)
 The Docker image for the Request Manager agent is hosted in the DataGrail ECR repository, which you will be granted
 access to. You should use an ARN with version specified for retrieving your image such as:
 
-- `datagrailagent.azurecr.io/datagrail-agent:latest`
-- `datagrailagent.azurecr.io/datagrail-agent:v0.7.2`
+- `datagrailagent.azurecr.io/datagrail-rm-agent:latest`
+- `datagrailagent.azurecr.io/datagrail-rm-agent:v0.8.6`
 
 **Note:** If you use `latest`, you will install the latest version available anytime your service restarts which could
 have breaking changes. We recommend specifying an explicit version.
@@ -149,7 +149,7 @@ will provide you with the value for this credential.
 
 **platform**
 
-The cloud provider used to deploy the `datagrail-agent`. `platform` requires two fields:
+The cloud provider used to deploy the `datagrail-rm-agent`. `platform` requires two fields:
 
 `credentials_manager` - settings for platform/credentials
 
@@ -157,5 +157,5 @@ The cloud provider used to deploy the `datagrail-agent`. `platform` requires two
 
 **redis_url**
 
-Optional field for multi-node deployments. `datagrail-agent` needs a persistent storage during its process lifetime
+Optional field for multi-node deployments. `datagrail-rm-agent` needs a persistent storage during its process lifetime
 thus, if you have multiple nodes, they need to share a redis instance.

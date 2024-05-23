@@ -128,7 +128,7 @@ The AWS Secrets manager ARN for the credentials used to make callback requests t
 
 **platform**
 
-The cloud provider used to deploy the `datagrail-agent`. `platform` requires three fields:
+The cloud provider used to deploy the `datagrail-rm-agent`. `platform` requires three fields:
 
 `provider` - acronym for cloud provider e.g. `aws`, `gcp`, `azure`
 
@@ -138,7 +138,7 @@ The cloud provider used to deploy the `datagrail-agent`. `platform` requires thr
 
 **redis_url**
 
-Optional field for multi-node deployments. `datagrail-agent` needs a persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a redis instance.
+Optional field for multi-node deployments. `datagrail-rm-agent` needs a persistent storage during its process lifetime thus, if you have multiple nodes, they need to share a redis instance.
 
 ## ECS Quick-Setup Guide
 
@@ -154,10 +154,10 @@ To configure the ECS service, you will need to define an ECS [“Task Definition
 
 To create a task definition, navigate to the ECS task definition management page (make sure you select your desired AWS region). Select “Create New Task Definition”, and then select the “Fargate” template in the wizard that populates. The next page will be the main configuration screen for the task definition.
 
-You’ll want to locate and click the “Configure via JSON” towards the bottom of the screen. This will open up a text box into which you can copy and paste the [task definition we’ve pre-populated](https://github.com/datagrail/datagrail-agent/tree/main/installation/examples/ecs_task_definition.json)
+You’ll want to locate and click the “Configure via JSON” towards the bottom of the screen. This will open up a text box into which you can copy and paste the [task definition we’ve pre-populated](../examples/ecs_task_definition.json)
 .
 
-Your `DATAGRAIL_AGENT_CONFIG` environment variable will need to be modified with your specific connection + configuration information. To edit/override this, you should open the datagrail-agent container in the “container definitions” section of the page. This will open the container definition editor, and you can scroll down and locate the environment variables section to make your edits. For an easier time, you modify our [example configuration](https://github.com/datagrail/datagrail-agent/tree/main/installation/examples/agent_config.json). Click “Update” at the bottom right of the screen to persist your changes.
+Your `DATAGRAIL_AGENT_CONFIG` environment variable will need to be modified with your specific connection + configuration information. To edit/override this, you should open the `datagrail-rm-agent` container in the “container definitions” section of the page. This will open the container definition editor, and you can scroll down and locate the environment variables section to make your edits. For an easier time, you can modify our [example configuration](../examples/agent_config.json). Click “Update” at the bottom right of the screen to persist your changes.
 
 You will need to override/specify the “Task role” at the top of the main definition editor page. You should set this to an IAM role that has access to your AWS S3 results storage bucket and AWS Secrets Manager. Note that if you do not want to or cannot take this option, you can configure AWS CLI environment variables for the container giving the agent the ability to connect. The variables are defined in the “Running the Agent” section of this page.
 
@@ -171,7 +171,7 @@ The agent service will also require a load balancer to handle TLS Termination an
 
 To begin, navigate to the load balancer creation wizard (again, make sure you adjust the region if necessary). You’ll need to select the load balancer type “Application Load Balancer” in the first step.
 
-On the second page of the wizard, you’ll want to select a unique name for the load balancer (we suggest datagrail-agent).
+On the second page of the wizard, you’ll want to select a unique name for the load balancer (we suggest `datagrail-rm-agent`).
 
 DataGrail requires that the load balancer be internet-facing, exist in a VPC subnet with ingress enabled, and use a security group that allows access to the load balancer through port 443 from our IP (specified in the “Network Communication Requirements” section of this document.
 
@@ -191,13 +191,13 @@ If you choose to create a cluster specifically for the agent, you can select the
 
 Once you have the cluster created, from the cluster management page you should see a “Create” button in the “Services” tab. Click this to launch the service creation wizard.
 
-In the wizard you’ll need to select “Fargate” as the launch type, and in the task definition drop down select the definition defined previously. Provide the service with a name (again we recommend datagrail-agent), and set the number of tasks to 1. You may then select “Next Step”.
+In the wizard you’ll need to select “Fargate” as the launch type, and in the task definition drop down select the definition defined previously. Provide the service with a name (again we recommend `datagrail-rm-agent`), and set the number of tasks to 1. You may then select “Next Step”.
 
 On the next page you’ll need to configure your VPC + subnets, and assign a security group allowing ingress on ports 443 from DataGrail (you may use the same security group assigned to your load balancer). The VPC selected should match the VPC of your load balancer, but the assigned subnets may be private. “Auto-assign public IP” should be set to “disabled”.
 
 Under “Load balancing”, you’ll want to select the option for “Application Load Balancer”. You should then be able to select your load balancer from the selection dropdown.
 
-Click “Add to load balancer” in the “Container to load balance” section. The container + port dropdown should already be set to “datagrail-agent”. This should cause container load balancing configuration options to appear.
+Click “Add to load balancer” in the “Container to load balance” section. The container + port dropdown should already be set to “datagrail-rm-agent”. This should cause container load balancing configuration options to appear.
 
 You’ll need to select `80:HTTP` as the “Production listener port” at the top of the configuration, and in the “Target group name” dropdown, select the load balancer target group created in the previous step.
 
