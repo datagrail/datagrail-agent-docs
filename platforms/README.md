@@ -11,7 +11,7 @@ from any other source should be rejected.
 The Agent will make network requests to the systems you have configured. In addition to these systems, it will also call
 back to the DataGrail API via TLS at:
 
-```http
+```
 https://<customer-name>.datagrail.io
 ```
 
