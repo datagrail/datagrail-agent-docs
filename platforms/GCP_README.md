@@ -15,15 +15,13 @@ The Docker image for the Request Manager agent is hosted in the DataGrail Artifa
 
 **Note:** If you use `latest`, you will install the latest version available anytime your service restarts which could have breaking changes. We recommend specifying an explicit version.
 
-You may optionally clone this image into your own Docker repository (for example, AWS ECR or GCP Artifact Registry), or use it directly from our repository in your install.
-
 ### Deployments
 
 We recommend using rolling deployments with a 100% minimum active percentage, and a maximum of 200%. This will avoid any downtime during releases, and also help alleviate any request congestion should many requests need to be serviced in parallel. We recommend using rolling (at a maximum of 50% per phase) or blue/green deployment strategies. It’s critical that your release configuration gives active inbound HTTPS requests a reasonable period (two minutes recommended) to complete before halting the container.
 
 ### Environment Variables
 
-The agent requires the following environment variables:
+The Agent requires the following environment variables:
 
 | Name                                  | Type   | Description |
 |---------------------------------------|--------|-------------|
