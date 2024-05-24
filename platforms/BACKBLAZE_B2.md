@@ -24,18 +24,18 @@ Example platform configuration using AWS Secrets Manager for secrets, and Backbl
 
 Ensure that the bucket, endpoint, and region are all set according to
 the values in the Backblaze Console;
-[Backblaze's console/B2 settings documentation](https://help.backblaze.com/hc/en-us/articles/360047425453-Getting-Started-with-the-S3-Compatible-API).
+[Backblaze's console/B2 settings documentation](https://www.backblaze.com/docs/cloud-storage-s3-compatible-api).
 
-Additionally, make sure to add the following environment values (as outlined in the AGENT CONFIGURATION link above):
+Additionally, make sure to add the following environment values:
 
 ```dotenv
-AWS_ACCESS_KEY_ID=<Backblasze B2 keyID>
-AWS_SECRET_ACCESS_KEY=<Backblasze B2 applicationKey>
+AWS_ACCESS_KEY_ID=<Backblaze B2 keyID>
+AWS_SECRET_ACCESS_KEY=<Backblaze B2 applicationKey>
 ```
 
 alternately, change these to `BACKBLAZE_` prefixed variables to prevent conflict with existing AWS configuration (e.g. when using AWS Secrets Manager):
 
 ```dotenv
-BACKBLAZE_ACCESS_KEY_ID=<Backblasze B2 keyID>
-BACKBLAZE_SECRET_ACCESS_KEY=<Backblasze B2 applicationKey>
+BACKBLAZE_ACCESS_KEY_ID=<Backblaze B2 keyID>
+BACKBLAZE_SECRET_ACCESS_KEY=<Backblaze B2 applicationKey>
 ```

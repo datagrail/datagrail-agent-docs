@@ -6,7 +6,7 @@ Jump back to the [Main README](README.md)
 
 ### Sourcing the Agent Image
 
-The Docker image for the Request Manager agent is hosted in the DataGrail ECR repository, which you will be granted access to. You should use an ARN with version specified for retrieving your image such as:
+The Docker image for the Request Manager Agent is hosted in the DataGrail ECR repository, which you will be granted access to. You should use an ARN with version specified for retrieving your image such as:
 
 - `338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-rm-agent:latest`
 - `338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-rm-agent:v0.8.6`
@@ -19,11 +19,11 @@ You may optionally clone this image into your own Docker repository (for example
 
 We recommend using rolling deployments with a 100% minimum active percentage, and a maximum of 200%. This will avoid any downtime during releases, and also help alleviate any request congestion should many requests need to be serviced in parallel. We recommend using rolling (at a maximum of 50% per phase) or blue/green deployment strategies. It’s critical that your release configuration gives active inbound HTTPS requests a reasonable period (two minutes recommended) to complete before halting the container.
 
-The majority of the configuration of the agent itself happens through a single environment variable described in the Agent Configuration section of this document. However, IAM privileges granting read/write access to your configured storage bucket are required.
+The majority of the configuration of the Agent itself happens through a single environment variable described in the Agent Configuration section of this document. However, IAM privileges granting read/write access to your configured storage bucket are required.
 
 In general we recommend doing this through IAM roles if you are operating in an AWS environment. However, you may also specify them as environment variables directly. The AWS library used requires the following variables be configured in that case:
 
-```
+```dotenv
 AWS_ACCESS_KEY_ID = <IAM access key ID>
 AWS_SECRET_ACCESS_KEY = <your IAM key secret>
 AWS_REGION = <region your service will be operating in>
@@ -31,9 +31,9 @@ AWS_REGION = <region your service will be operating in>
 
 ### Connection Configuration
 
-The DataGrail agent’s primary configuration is sourced from an environment variable named `DATAGRAIL_AGENT_CONFIG`. This configuration variable defines the connections available for the DataGrail agent and the credentials used for authenticating with the DataGrail servers. The following is an example configuration variable. The fields and their purpose are explained in detail below:
+The DataGrail Agent’s primary configuration is sourced from an environment variable named `DATAGRAIL_AGENT_CONFIG`. This configuration variable defines the connections available for the DataGrail Agent and the credentials used for authenticating with the DataGrail servers. The following is an example configuration variable. The fields and their purpose are explained in detail below:
 
-```
+```dotenv
 DATAGRAIL_AGENT_CONFIG='{
   "connections": [
       {
@@ -56,7 +56,7 @@ DATAGRAIL_AGENT_CONFIG='{
     "credentials_manager": {
       "provider": "<AWSSSMParameterStore|AWSSecretsManager|JSONFile|AzureKeyVault|GCP>",
       "options": {
-        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>, azure needs `secret_vault`"
+        "optional": "some modules may have required fields, e.g. GCP should have project_id: <project id>, Azure needs `secret_vault`"
       }
     },
     "storage_manager": {
@@ -78,7 +78,7 @@ AWS_REGION=<aws region>
 
 **connections**
 
-The connections array defines internal systems that the agent should connect to and their capabilities. It is also used to map and classify system results back into DataGrail.
+The connections array defines internal systems that the Agent should connect to and their capabilities. It is also used to map and classify system results back into DataGrail.
 
 **name**
 
@@ -86,7 +86,7 @@ The friendly name of the target system. This string will be displayed in the req
 
 **uuid**
 
-The uuid associated with the connection. This should be a v4 uuid and should be unique per-connection. You can use a service like [UUID Generator](https://www.uuidgenerator.net/) to obtain these easily.
+The uuid associated with the connection. This should be a v4 UUID and should be unique per-connection. You can use a service like [UUID Generator](https://www.uuidgenerator.net/) to obtain these easily.
 
 **capabilities**
 
@@ -120,7 +120,7 @@ Your DataGrail-registered customer domain.
 
 **datagrail_agent_credentials_location**
 
-The AWS Secrets manager ARN containing OAuth credentials used by DataGrail to authenticate with the agent.
+The AWS Secrets manager ARN containing OAuth credentials used by DataGrail to authenticate with the Agent.
 
 **datagrail_credentials_location**
 
@@ -142,24 +142,23 @@ Optional field for multi-node deployments. `datagrail-rm-agent` needs a persiste
 
 ## ECS Quick-Setup Guide
 
-The suggested deployment mechanism in AWS for the agent is via Amazon ECS. Deploying in an ECS service will result in most of the details of load balancing, ssl termination, and service uptime being managed in a simple and standard manner.
+The suggested deployment mechanism in AWS for the Agent is via Amazon ECS. Deploying in an ECS service will result in most of the details of load balancing, ssl termination, and service uptime being managed in a simple and standard manner.
 
 We recommend reading over the Amazon documentation on setting up an ECS service: Creating an Amazon ECS Service.
 
-The following sections are the three main steps to creating an ECS agent service. Please note that depending on your AWS environment’s pre-existing configuration, you may need to take additional steps to configure your VPC, etc. Those are not covered in this document but we are happy to provide you with any assistance we can offer.
+The following sections are the three main steps to creating an ECS Agent service. Please note that depending on your AWS environment’s pre-existing configuration, you may need to take additional steps to configure your VPC, etc. Those are not covered in this document but we are happy to provide you with any assistance we can offer.
 
 ### 1. Create Task Definition
 
-To configure the ECS service, you will need to define an ECS [“Task Definition”](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html), which contains all of the details on the agent container’s environment, configuration and system resources.
+To configure the ECS service, you will need to define an ECS [“Task Definition”](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html), which contains all of the details on the Agent container’s environment, configuration and system resources.
 
 To create a task definition, navigate to the ECS task definition management page (make sure you select your desired AWS region). Select “Create New Task Definition”, and then select the “Fargate” template in the wizard that populates. The next page will be the main configuration screen for the task definition.
 
-You’ll want to locate and click the “Configure via JSON” towards the bottom of the screen. This will open up a text box into which you can copy and paste the [task definition we’ve pre-populated](../examples/ecs_task_definition.json)
-.
+You’ll want to locate and click the “Configure via JSON” towards the bottom of the screen. This will open up a text box into which you can copy and paste the [task definition we’ve pre-populated](../examples/ecs_task_definition.json).
 
 Your `DATAGRAIL_AGENT_CONFIG` environment variable will need to be modified with your specific connection + configuration information. To edit/override this, you should open the `datagrail-rm-agent` container in the “container definitions” section of the page. This will open the container definition editor, and you can scroll down and locate the environment variables section to make your edits. For an easier time, you can modify our [example configuration](../examples/agent_config.json). Click “Update” at the bottom right of the screen to persist your changes.
 
-You will need to override/specify the “Task role” at the top of the main definition editor page. You should set this to an IAM role that has access to your AWS S3 results storage bucket and AWS Secrets Manager. Note that if you do not want to or cannot take this option, you can configure AWS CLI environment variables for the container giving the agent the ability to connect. The variables are defined in the “Running the Agent” section of this page.
+You will need to override/specify the “Task role” at the top of the main definition editor page. You should set this to an IAM role that has access to your AWS S3 results storage bucket and AWS Secrets Manager. Note that if you do not want to or cannot take this option, you can configure AWS CLI environment variables for the container giving the Agent the ability to connect. The variables are defined in the “Running the Agent” section of this page.
 
 You will also need to set the “Operating system family” to “Linux”.
 
@@ -167,13 +166,13 @@ Click “Create” at the bottom of the definition editor to create your new tas
 
 ### 2. Launch Load Balancer
 
-The agent service will also require a load balancer to handle TLS Termination and traffic routing to the individual containers. ECS Service construction doesn’t handle this, so it will need to be configured manually.
+The Agent service will also require a load balancer to handle TLS Termination and traffic routing to the individual containers. ECS Service construction doesn’t handle this, so it will need to be configured manually.
 
 To begin, navigate to the load balancer creation wizard (again, make sure you adjust the region if necessary). You’ll need to select the load balancer type “Application Load Balancer” in the first step.
 
 On the second page of the wizard, you’ll want to select a unique name for the load balancer (we suggest `datagrail-rm-agent`).
 
-DataGrail requires that the load balancer be internet-facing, exist in a VPC subnet with ingress enabled, and use a security group that allows access to the load balancer through port 443 from our IP (specified in the “Network Communication Requirements” section of this document.
+DataGrail requires that the load balancer be internet-facing, exist in a VPC subnet with ingress enabled, and use a security group that allows access to the load balancer through port 443 from our IP (specified in the “Network Communication Requirements” section of this document).
 
 Additionally on this page you’ll want to add a listener for port 443. You’ll have the option to “create a target group” which will allow you to launch a target group creation wizard. Once in, you’ll need to select the target type “IP Addresses”, which ECS requires, and VPC + subnets, and security group, which can all match the settings for the main load balancer.
 
@@ -185,9 +184,9 @@ Back in the load balancer creation wizard, you can click “Create Load Balancer
 
 ### 3. Build ECS Service
 
-The final step in setting up the ECS agent is configuring the service that will host the agent container tasks. Begin by navigating to the ECS console (again, select the appropriate region you wish to deploy in). Once here, you can either create a new, or select an existing ECS cluster to deploy the service in.
+The final step in setting up the ECS Agent is configuring the service that will host the Agent container tasks. Begin by navigating to the ECS console (again, select the appropriate region you wish to deploy in). Once here, you can either create a new, or select an existing ECS cluster to deploy the service in.
 
-If you choose to create a cluster specifically for the agent, you can select the “Networking Only” option, since the agent will only run in AWS Fargate. For an existing cluster, it will need to either be “Networking Only”, or “EC2 Linux + Networking” - we do not support windows-based clusters.
+If you choose to create a cluster specifically for the Agent, you can select the “Networking Only” option, since the Agent will only run in AWS Fargate. For an existing cluster, it will need to either be “Networking Only”, or “EC2 Linux + Networking” - we do not support windows-based clusters.
 
 Once you have the cluster created, from the cluster management page you should see a “Create” button in the “Services” tab. Click this to launch the service creation wizard.
 
