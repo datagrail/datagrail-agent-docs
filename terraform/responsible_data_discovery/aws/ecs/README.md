@@ -1,39 +1,41 @@
-# Prerequisites
+# Deploy the DataGrail Responsible Data Discovery Agent with Terraform
+
+## Prerequisites
 This Terraform manages resources specific to the Responsible Data Discovery Agent. Shared resources the Agent depends upon must be configured separately and manually specified in advance.
 
-## VPC
+### VPC
 An existing VPC is required in this configuration. Endpoints to required AWS services can optionally be created by this Terraform within a single region. If the Agent, Secrets Manager entries, and CloudWatch group do not reside in the same region, the endpoints must be manually configured.
 
-## Subnets
+### Subnets
 One private subnet in the VPC will need to exist and be created outside this Terraform configuration. 
 
-## NAT Gateway
+### NAT Gateway
 The private subnet must have a NAT Gateway in its route table so traffic can egress over the public internet back to DataGrail.
 
-## Secrets
+### Secrets
 Secrets for the DataGrail Agent will need to be stored prior to running the configuration. The token used in the callback to DataGrail (`datagrail_credentials_location`), and the credentials for each integration must be created in AWS Secrets Manager outside this Terraform.
 
-## Configuration File
+### Configuration File
 The Agent requires a configuration file to store metadata such as you DataGrail subdomain, credentials storage method and DataGrail credentials location. A sample of this configuration can be found in [rdd-agent-config.sample.json](../rdd-agent-config.sample.json).
 
-# Managed Resources
+## Managed Resources
 
-## ECS Fargate Task(s)
+### ECS Fargate Task(s)
 An ECS Fargate Task(s) will be deployed in a Service in either an existing or new cluster. The service will live in an existing private subnet.
 
-## Security Groups
+### Security Groups
 Security Groups will be created for the Agent Service to restrict egress to VPC Endpoints for ECR, S3, Secrets Manager, CloudWatch, and DataGrail's IP.
 
-## VPC Endpoints
+### VPC Endpoints
 VPC Endpoints can optionally be created to connect to various AWS services outside the VPC. 
 
-## IAM Policy
+### IAM Policy
 A role with two policies will be created that are assumed by the Agent Service. The first is the AWS-managed AmazonECSTaskExecutionRolePolicy to grant access to ECR for pulling the Agent image and to CloudWatch to write to the Agent's Log Group. The second is a policy that grants the task Secrets Manager `GetSecretValue` permissions to retrieve the various configured secrets.
 
-# Variables
+## Variables
 The Terraform configuration requires a number of variables either declared in a `.tfvars` file or as parameters in the `apply` statement. If using a `.tfvars` file, copy the [`variables.sample.tfvars`](variables.example.tfvars) (`cp variables.sample.tfvars variables.tfvars` ) and update the values as described in the following tables.
 
-## Required
+### Required
 | Name                 | Type     | Description                                                                |
 |----------------------|----------|----------------------------------------------------------------------------|
 | `region`             | `string` | The region where the agent will be deployed.                               |
@@ -41,7 +43,7 @@ The Terraform configuration requires a number of variables either declared in a 
 | `private_subnet_id`  | `string` | The ID of the private subnet to deploy the datagrail-rm-agent ECS task(s). |
 | `agent_image_uri`    | `string` | The URI of the Agent image, with version tag, for the agent container.     |
 
-## Optional
+### Optional
 | Name                       | Type           | Default                               | Description                                                                                                                                                     |
 |----------------------------|----------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `project_name`             | `string`       | `datagrail-rm-agent`                     | The name of the project. The value will be prepended to resource names.                                                                                         |
