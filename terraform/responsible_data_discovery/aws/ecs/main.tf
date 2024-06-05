@@ -12,7 +12,7 @@ provider "aws" {
   default_tags {
     tags = var.tags
   }
-  profile="admin-158714794554"
+  profile = "admin-158714794554"
 }
 
 data "aws_vpc" "this" {
@@ -28,9 +28,9 @@ data "aws_route_table" "private" {
 }
 
 locals {
-  rdd_agent_config                      = jsondecode(file("../config/rdd-agent-config.json"))
-  secrets_manager                      = local.rdd_agent_config.platform.credentials_manager.provider
-  datagrail_credentials_location       = local.rdd_agent_config.datagrail_credentials_location
+  rdd_agent_config               = jsondecode(file("../rdd-agent-config.json"))
+  secrets_manager                = local.rdd_agent_config.platform.credentials_manager.provider
+  datagrail_credentials_location = local.rdd_agent_config.datagrail_credentials_location
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -125,7 +125,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "/etc/rdd.conf"
       ],
       environment = [
-        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = file("../rdd/rdd-agent-config.json") }
+        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = file("../rdd-agent-config.json") }
       ]
       cpu              = 0
       workingDirectory = "/app"
@@ -134,7 +134,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "retries" = 3
         "command" = [
           "CMD-SHELL",
-          "curl -f http://localhost/docs || exit 1"
+          "test -f /healthy"
         ],
         "timeout"     = 5
         "interval"    = 30
