@@ -16,7 +16,7 @@ The private subnet must have a NAT Gateway in its route table so traffic can egr
 Secrets for the DataGrail Agent will need to be stored prior to running the configuration. The token used in the callback to DataGrail (`datagrail_credentials_location`), and the credentials for each integration must be created in AWS Secrets Manager outside this Terraform.
 
 ### Configuration File
-The Agent requires a configuration file to store metadata such as you DataGrail subdomain, credentials storage method and DataGrail credentials location. A sample of this configuration can be found in [rdd-agent-config.sample.json](../rdd-agent-config.sample.json).
+The Agent requires a configuration file to store metadata such as you DataGrail subdomain, credentials storage method and DataGrail credentials location. A sample of this configuration can be found in [rdd-agent-config.example.json](../rdd-agent-config.example.json).
 
 ## Managed Resources
 
