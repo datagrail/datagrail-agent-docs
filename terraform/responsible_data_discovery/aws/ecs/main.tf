@@ -12,7 +12,6 @@ provider "aws" {
   default_tags {
     tags = var.tags
   }
-  profile = "admin-158714794554"
 }
 
 data "aws_vpc" "this" {
