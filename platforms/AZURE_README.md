@@ -39,7 +39,7 @@ Set the following `platform` values in the `DATAGRAIL_AGENT_CONFIG` environment 
 To use Azure Key Vault for storing Agent and connection credentials, set the following `credentials_manager` values:
 
 | Key                    | Value          | Description |
-|------------------------|----------------|-------------|
+|------------------------|:--------------:|-------------|
 | `provider`             | AzureKeyVault  | Agent will use Azure Key Vault |
 | `options.secret_vault` | \<vault name\> | Name of the vault |
 
@@ -58,12 +58,12 @@ To use Azure Key Vault for storing Agent and connection credentials, set the fol
 
 To use Azure Blob Storage for storing the results of privacy requests, set the following `storage_manager` values:
 
-**Note:** Use the same `bucket` name as configured on the DataGrail platform
+**Note:** Use the same `container` name as configured on the DataGrail platform
 
 | Key                  | Value            | Description |
-|----------------------|------------------|-------------|
+|----------------------|:----------------:|-------------|
 | `provider`           | AzureBlob        | Agent will use Azure Blob Storage |
-| `options.bucket`     | \<bucket name\>  | Name of the bucket storing the results |
+| `options.bucket`     | \<container name\>  | Name of the container storing the results |
 | `options.project_id` | \<account name\> | Azure Blob Storage account name |
 
 **Example:**
@@ -72,7 +72,7 @@ To use Azure Blob Storage for storing the results of privacy requests, set the f
 "storage_manager": {
   "provider": "AzureBlob",
   "options": {
-    "bucket": "<bucket name>",
+    "bucket": "<container name>",
     "project_id": "<account name>"
   }
 }
@@ -111,7 +111,7 @@ This example `DATAGRAIL_AGENT_CONFIG` environment variable uses Azure as the pla
     "storage_manager": {
       "provider": "AzureBlob",
       "options": {
-        "bucket": "<bucket name>",
+        "bucket": "<container name>",
         "project_id": "<account name>"
       }
     }
