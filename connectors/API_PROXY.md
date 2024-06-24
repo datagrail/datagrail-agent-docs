@@ -67,7 +67,7 @@ _Example Configuration:_
                 "headers": {
                     "Authorization": "Basic {credentials}"
                 },
-                "body": "{{\"email\": \"{email}}\"}",
+                "body": "{{\"email\": \"{email}\"}}",
                 "verb": "GET",
                 "verify_ssl": "true"
             }
@@ -78,7 +78,7 @@ _Example Configuration:_
                 "headers": {
                     "Authorization": "Basic {credentials}"
                 },
-                "body": "{{\"email\": \"{email}}\"}",
+                "body": "{{\"email\": \"{email}\"}}",
                 "verb": "DELETE",
                 "verify_ssl": "true"
             }
