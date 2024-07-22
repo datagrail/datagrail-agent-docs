@@ -12,7 +12,9 @@ For ease of maintainability and readability, it is suggested that the various qu
 
 It is advised to create a DataGrail Agent-specific Snowflake User or Role to scope the permissions to the operations that it needs to perform. 
 
-Create a new secret with the users' credentials in JSON format in your preferred credentials manager with the following key/value pairs:
+We currently support two authentication methods for the Snowflake integrations. Create a new secret with the users' credentials in JSON format in your preferred credentials manager with the following key/value pairs:
+
+1. Password Authentication
 ```json
 {
     "user": "<DB username>",
@@ -22,6 +24,24 @@ Create a new secret with the users' credentials in JSON format in your preferred
     "database": "<Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>"
 }
 ```
+2. Key Pair Authentication
+```json
+{
+    "user": "<DB username>",
+    "private_key": "<Base64 encoded private key>",
+    "account": "<Snowflake Account, e.g. EXA*****>",
+    "warehouse": "<Snowflake Warehouse, e.g. COMPUTE_WH>",
+    "database": "<Snowflake DB, e.g. SNOWFLAKE_SAMPLE_DATA>"
+}
+```
+
+In order to utilize the key pair authentication you must generate the public and private key using the following steps. Snowflake Documentation can be found [here](https://docs.snowflake.com/en/user-guide/key-pair-auth).
+1. Generate the private key `openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt`
+2. Generate the public key `openssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub`
+3. Assign public key to user within Snowflake `ALTER USER {user} SET RSA_PUBLIC_KEY={public_key}`
+4. Base64 encode the private key `openssl base64 -in rsa_key.p8 -out encoded_rsa_key.p8`
+5. Utilize the file value in credentials manager
+
 Tags and other settings, please set as necessary.
 
 Copy the location of the secret (e.g. Amazon ARN) and insert it in as the value of the `credentials_location` key of the connector.
