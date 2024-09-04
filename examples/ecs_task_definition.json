@@ -38,7 +38,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-rm-agent:v0.8.6",
+      "image": "338780525468.dkr.ecr.us-west-2.amazonaws.com/datagrail-rm-agent:v0.8.7",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,

@@ -48,29 +48,31 @@ _Example Configuration:_
                     "Authorization": "Basic {credentials}"
                 },
                 "body": "",
-                "verb": "POST",
+                "verb": "GET",
                 "verify_ssl": "true"
             }
         ],
         "identifiers": {
-            "phone_number": [{
-                "url": "https://api.acme.com/v0/identifiers/get-phone",
-                "headers": {
-                    "Authorization": "Basic {credentials}"
-                },
-                "body": "{{\"email\": \"{email}\"}}",
-                "verb": "POST",
-                "verify_ssl": "true"
-            }]
+            "phone_number": [
+                {
+                    "url": "https://api.acme.com/v0/identifiers/get-phone",
+                    "headers": {
+                        "Authorization": "Basic {credentials}"
+                    },
+                    "body": "{{\"email\": \"{email}\"}}",
+                    "verb": "POST",
+                    "verify_ssl": "true"
+                }
+            ]
         },
-        "access":[
+        "access": [
             {
                 "url": "https://api.acme.com/v0/users",
                 "headers": {
                     "Authorization": "Basic {credentials}"
                 },
-                "body": "{{\"email\": \"{email}}\"}",
-                "verb": "GET",
+                "body": "{{\"email\": \"{email}\"}}",
+                "verb": "POST",
                 "verify_ssl": "true"
             }
         ],
@@ -80,13 +82,13 @@ _Example Configuration:_
                 "headers": {
                     "Authorization": "Basic {credentials}"
                 },
-                "body": "{{\"email\": \"{email}}\"}",
+                "body": "{{\"email\": \"{email}\"}}",
                 "verb": "DELETE",
                 "verify_ssl": "true"
             }
         ]
     },
-   "credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service-hfbdhy"
+    "credentials_location": "arn:aws:secretsmanager:Region:AccountId:secret:datagrail.user-service-hfbdhy"
 }
 ```
 
