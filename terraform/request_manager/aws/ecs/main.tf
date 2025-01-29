@@ -143,13 +143,6 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
           "awslogs-stream-prefix" = "/ecs"
         }
       },
-      portMappings = [
-        {
-          "hostPort"      = 80
-          "protocol"      = "tcp"
-          "containerPort" = 80
-        }
-      ],
       command = [
         "supervisord",
         "-n",
