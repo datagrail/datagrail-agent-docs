@@ -126,7 +126,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "retries" = 3
         "command" = [
           "CMD-SHELL",
-          "test -f /healthy"
+          "test -f /app/healthy"
         ],
         "timeout"     = 5
         "interval"    = 30
