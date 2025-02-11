@@ -1,5 +1,8 @@
 # Deploy the DataGrail Request Manager Agent with Terraform
 
+> [!IMPORTANT]
+> Terraform compatible with `datagrail-rm-agent:v0.9.0` and newer. The Agent port has been updated to `8080`, which requires updating the container healthcheck and load balancer to ensure requests are successful.
+
 ## Prerequisites
 
 This Terraform manages resources specific to the Agent. Shared resources the Agent depends upon must be configured separately and manually specified in advance.

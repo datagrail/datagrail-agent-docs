@@ -145,9 +145,9 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
       },
       portMappings = [
         {
-          "hostPort"      = 80
+          "hostPort"      = 8080
           "protocol"      = "tcp"
-          "containerPort" = 80
+          "containerPort" = 8080
         }
       ],
       command = [
@@ -166,7 +166,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "retries" = 3
         "command" = [
           "CMD-SHELL",
-          "curl -f http://localhost/docs || exit 1"
+          "curl -f http://localhost:8080/docs || exit 1"
         ],
         "timeout"     = 5
         "interval"    = 30
@@ -193,8 +193,8 @@ resource "aws_security_group_rule" "load_balancer_ingress_rule" {
 
 resource "aws_security_group_rule" "load_balancer_egress_rule" {
   type                     = "egress"
-  from_port                = 80
-  to_port                  = 80
+  from_port                = 8080
+  to_port                  = 8080
   protocol                 = "tcp"
   security_group_id        = aws_security_group.load_balancer_security_group.id
   source_security_group_id = aws_security_group.service_security_group.id
@@ -207,8 +207,8 @@ resource "aws_security_group" "service_security_group" {
 
 resource "aws_security_group_rule" "service_ingress_rule" {
   type                     = "ingress"
-  from_port                = 80
-  to_port                  = 80
+  from_port                = 8080
+  to_port                  = 8080
   protocol                 = "tcp"
   security_group_id        = aws_security_group.service_security_group.id
   source_security_group_id = aws_security_group.load_balancer_security_group.id
@@ -293,7 +293,7 @@ resource "aws_vpc_endpoint" "secrets_manager" {
 
 resource "aws_alb_target_group" "datagrail_agent" {
   name        = "${var.project_name}-target-group"
-  port        = 80
+  port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.aws_vpc.this.id
@@ -341,7 +341,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     target_group_arn = aws_alb_target_group.datagrail_agent.arn
     container_name   = aws_ecs_task_definition.datagrail_agent.family
-    container_port   = 80
+    container_port   = 8080
   }
 
   network_configuration {
