@@ -1,7 +1,7 @@
 # Deploy the DataGrail Responsible Data Discovery Agent with Terraform
 
 > [!IMPORTANT]
-> Terraform compatible with `datagrail-rdd-agent:v0.6.0` and newer. The healthcheck endpoint has been updated, and earlier versions will show as unhealthy.
+> Terraform compatible with `datagrail-rdd-agent:v0.6.0` and newer. An updated healthcheck endpoint is used, which will cause earlier versions to be unhealthy.
 
 ## Prerequisites
 
