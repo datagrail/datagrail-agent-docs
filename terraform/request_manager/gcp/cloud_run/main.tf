@@ -89,7 +89,7 @@ resource "google_cloud_run_v2_service" "datagrail-rm-agent" {
       image = var.agent_image
 
       ports {
-        container_port = 80
+        container_port = 8080
       }
       command = ["supervisord", "-n", "-c", "/etc/rm.conf"]
 
@@ -99,7 +99,7 @@ resource "google_cloud_run_v2_service" "datagrail-rm-agent" {
         period_seconds        = 30
         failure_threshold     = 3
         http_get {
-          port = 80
+          port = 8080
           path = "/docs"
         }
       }
