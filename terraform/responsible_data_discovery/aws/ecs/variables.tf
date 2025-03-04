@@ -64,13 +64,13 @@ variable "cluster_arn" {
 
 variable "agent_container_cpu" {
   type        = number
-  default     = 1024
+  default     = 4096
   description = "The CPU allotted for the agent container."
 }
 
 variable "agent_container_memory" {
   type        = number
-  default     = 2048
+  default     = 8192
   description = "The memory allotted for the agent container."
 }
 
