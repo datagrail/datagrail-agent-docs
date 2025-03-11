@@ -1,9 +1,0 @@
-{
-  "customer_domain": "acme.datagrail.io",
-  "datagrail_credentials_location": "arn:aws:secretsmanager:us-west-2:158714794554:secret:datagrail.datagrail-credentials-gXHB5t",
-  "platform": {
-    "credentials_manager": {
-      "provider": "AWSSecretsManager"
-    }
-  }
-}

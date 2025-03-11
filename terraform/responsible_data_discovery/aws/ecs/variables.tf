@@ -6,76 +6,81 @@ variable "region" {
 }
 
 variable "vpc_id" {
+  description = "The ID of the VPC to place the agent into."
   type        = string
-  description = "The ID of the VPC to place the Agent into."
 }
 
-variable "private_subnet_id" {
-  type        = string
+variable "private_subnet_ids" {
   description = "The ID(s) of the private subnet(s) to put the datagrail-rdd-agent ECS task(s) into."
+  type        = list(string)
+}
+
+variable "datagrail_subdomain" {
+  description = "The domain of your DataGrail instance, e.g. acme.datagrail.io."
+  type        = string
+}
+
+variable "credentials_manager" {
+  description = "The credentials manager used to store secrets, e.g. DataGrail API token and data store credentials."
+  type        = string
+  validation {
+    condition     = contains(["AWSSecretsManager", "AWSParameterStore", "JSONFile"], var.credentials_manager)
+    error_message = "Credentials manager must be one of: AWSSecretsManager, AWSParameterStore, JSONFile"
+  }
 }
 
 variable "agent_image_uri" {
+  description = "The URI, along with version tag, of the RDD agent image."
   type        = string
-  description = "The URI of the Agent image"
+}
+
+variable "datagrail_credentials" {
+  description = "API token used to authenticate requests to DataGrail."
+  type        = string
 }
 
 ############
 # Optional #
 ############
+
 variable "project_name" {
+  description = "The name of the project. The value will be used in resource names as a prefix."
   type        = string
   default     = "datagrail-rdd-agent"
-  description = "The name of the project. The value will be used in resource names as a prefix."
-}
-
-variable "create_vpc_endpoints" {
-  type        = bool
-  default     = true
-  description = "Determines whether VPC Endpoints for ECR, Cloudwatch, and optionally Secrets Manager, should be created"
 }
 
 variable "desired_task_count" {
+  description = "The desired number of tasks in the ECS service. If count is >1, you must use an external Redis Queue."
   type        = number
   default     = 1
-  description = "The desired number of tasks in the ECS service. If count is >1, you must use an external Redis Queue."
 }
 
 variable "cloudwatch_log_retention" {
+  description = "The retention period (in days) of the agent's CloudWatch log group."
   type        = number
   default     = 30
-  description = "The retention period (in days) of the agent's CloudWatch log group."
-}
-
-variable "service_egress_cidr" {
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
-  description = "CIDR blocks to add to the agent service outbound rules."
 }
 
 variable "cluster_arn" {
+  description = "The ARN of an existing cluster to place the agent into."
   type        = string
   default     = ""
-  description = <<EOF
-  The ARN of an existing cluster to place the datagrail-agent into.
-  If omitted, a cluster named `datagrail-rdd-agent-cluster` will be created.
-  EOF
 }
 
 variable "agent_container_cpu" {
+  description = "The CPU allotted for the agent container."
   type        = number
   default     = 4096
-  description = "The CPU allotted for the agent container."
 }
 
 variable "agent_container_memory" {
+  description = "The memory allotted for the agent container."
   type        = number
   default     = 8192
-  description = "The memory allotted for the agent container."
 }
 
 variable "tags" {
+  description = "Default tags to add to resources that support them."
   type        = map(string)
   default     = {}
-  description = "Default tags to add to resources that support them."
 }

@@ -8,29 +8,11 @@ terraform {
   required_version = ">= 1.5.0"
 }
 
-provider "aws" {
-  default_tags {
-    tags = var.tags
-  }
-}
 
-data "aws_vpc" "this" {
-  id = var.vpc_id
-}
-
-data "aws_subnet" "private" {
-  id = var.private_subnet_id
-}
-
-data "aws_route_table" "private" {
-  subnet_id = var.private_subnet_id
-}
-
-locals {
-  rdd_agent_config               = jsondecode(file("../rdd-agent-config.json"))
-  secrets_manager                = local.rdd_agent_config.platform.credentials_manager.provider
-  datagrail_credentials_location = local.rdd_agent_config.datagrail_credentials_location
-}
+################################################################################
+# Task Execution - IAM Role
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
+################################################################################
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
@@ -54,6 +36,11 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+################################################################################
+# Tasks - IAM role
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html
+################################################################################
+
 resource "aws_iam_role" "ecs_task_role" {
   name               = "${var.project_name}-ecs-task-role"
   path               = "/"
@@ -68,7 +55,7 @@ data "aws_iam_policy_document" "agent_task_policy" {
       "secretsmanager:GetSecretValue"
     ]
 
-    resources = [local.datagrail_credentials_location]
+    resources = [aws_secretsmanager_secret.api_key.arn]
 
   }
 }
@@ -84,10 +71,30 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
   policy_arn = aws_iam_policy.agent_task.arn
 }
 
+################################################################################
+# CloudWatch
+################################################################################
+
 resource "aws_cloudwatch_log_group" "ecs_task_logger" {
-  name = "/ecs/${var.project_name}"
+  name = "/aws/ecs/${var.project_name}"
 
   retention_in_days = var.cloudwatch_log_retention
+}
+
+################################################################################
+# Task Definition
+################################################################################
+
+locals {
+  datagrail_agent_config = jsonencode({
+    "customer_domain" : var.datagrail_subdomain,
+    "datagrail_credentials_location" : aws_secretsmanager_secret.api_key.arn,
+    "platform" : {
+      "credentials_manager" : {
+        "provider" : var.credentials_manager
+      }
+    }
+  })
 }
 
 resource "aws_ecs_task_definition" "datagrail_agent" {
@@ -107,7 +114,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "options" = {
           "awslogs-group"         = aws_cloudwatch_log_group.ecs_task_logger.name
           "awslogs-region"        = var.region
-          "awslogs-stream-prefix" = "/ecs"
+          "awslogs-stream-prefix" = "ecs"
         }
       },
       command = [
@@ -117,7 +124,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "/etc/rdd.conf"
       ],
       environment = [
-        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = file("../rdd-agent-config.json") }
+        { "name" = "DATAGRAIL_AGENT_CONFIG", "value" = local.datagrail_agent_config }
       ]
       cpu              = 0
       workingDirectory = "/app"
@@ -137,107 +144,56 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
   ])
 }
 
-resource "aws_security_group" "service_security_group" {
-  name   = "${var.project_name}-service-security-group"
-  vpc_id = data.aws_vpc.this.id
-}
+################################################################################
+# Cluster
+################################################################################
 
-resource "aws_security_group_rule" "service_egress_rule" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  security_group_id = aws_security_group.service_security_group.id
-  cidr_blocks       = var.service_egress_cidr
-}
-
-resource "aws_security_group" "vpc_endpoint" {
-  count  = var.create_vpc_endpoints == true ? 1 : 0
-  name   = "${var.project_name}-vpce-security-group"
-  vpc_id = data.aws_vpc.this.id
-}
-
-resource "aws_security_group_rule" "vpc_endpoint" {
-  count             = var.create_vpc_endpoints == true ? 1 : 0
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  security_group_id = aws_security_group.vpc_endpoint[0].id
-  cidr_blocks       = [data.aws_vpc.this.cidr_block]
-}
-
-resource "aws_vpc_endpoint" "cloudwatch" {
-  count              = var.create_vpc_endpoints == true ? 1 : 0
-  vpc_id             = data.aws_vpc.this.id
-  service_name       = "com.amazonaws.${var.region}.logs"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [data.aws_subnet.private.id]
-  security_group_ids = [aws_security_group.vpc_endpoint[0].id]
-
-  private_dns_enabled = true
-}
-
-resource "aws_vpc_endpoint" "s3" {
-  count             = var.create_vpc_endpoints == true ? 1 : 0
-  vpc_id            = data.aws_vpc.this.id
-  service_name      = "com.amazonaws.${var.region}.s3"
-  vpc_endpoint_type = "Gateway"
-  route_table_ids   = [data.aws_route_table.private.id]
-}
-
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  count              = var.create_vpc_endpoints == true ? 1 : 0
-  vpc_id             = data.aws_vpc.this.id
-  service_name       = "com.amazonaws.${var.region}.ecr.dkr"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [data.aws_subnet.private.id]
-  security_group_ids = [aws_security_group.vpc_endpoint[0].id]
-
-  private_dns_enabled = true
-}
-
-resource "aws_vpc_endpoint" "ecr_api" {
-  count              = var.create_vpc_endpoints == true ? 1 : 0
-  vpc_id             = data.aws_vpc.this.id
-  service_name       = "com.amazonaws.${var.region}.ecr.api"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [data.aws_subnet.private.id]
-  security_group_ids = [aws_security_group.vpc_endpoint[0].id]
-
-  private_dns_enabled = true
-}
-
-resource "aws_vpc_endpoint" "secrets_manager" {
-  count              = local.secrets_manager == "AWSSecretsManager" && var.create_vpc_endpoints == true ? 1 : 0
-  vpc_id             = data.aws_vpc.this.id
-  service_name       = "com.amazonaws.${var.region}.secretsmanager"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [data.aws_subnet.private.id]
-  security_group_ids = [aws_security_group.vpc_endpoint[0].id]
-
-  private_dns_enabled = true
-}
-
-resource "aws_ecs_cluster" "datagrail_agent_cluster" {
+resource "aws_ecs_cluster" "datagrail_agent" {
   count = var.cluster_arn == "" ? 1 : 0
   name  = "${var.project_name}-cluster"
 }
 
-locals {
-  cluster_id = var.cluster_arn == "" ? aws_ecs_cluster.datagrail_agent_cluster[0].id : var.cluster_arn
+################################################################################
+# Service
+################################################################################
+
+resource "aws_security_group" "service" {
+  name        = "${var.project_name}-service-security-group"
+  vpc_id      = var.vpc_id
+  description = "Security group attached to the ${var.project_name} service."
+}
+
+resource "aws_vpc_security_group_egress_rule" "service_to_anywhere" {
+  security_group_id = aws_security_group.service.id
+
+  description = "Allow datagrail-rdd-agent service egress to anywhere"
+  cidr_ipv4   = "0.0.0.0/0"
+  ip_protocol = "-1"
 }
 
 resource "aws_ecs_service" "service" {
   name            = "${var.project_name}-service"
-  cluster         = local.cluster_id
+  cluster         = try(aws_ecs_cluster.datagrail_agent[0].arn, var.cluster_arn)
   task_definition = aws_ecs_task_definition.datagrail_agent.arn
   launch_type     = "FARGATE"
   desired_count   = var.desired_task_count
 
   network_configuration {
-    subnets          = [data.aws_subnet.private.id]
+    subnets          = var.private_subnet_ids
     assign_public_ip = true
-    security_groups  = [aws_security_group.service_security_group.id]
+    security_groups  = [aws_security_group.service.id]
   }
+}
+
+resource "aws_secretsmanager_secret" "api_key" {
+  name                    = "datagrail.rdd_agent_api_key"
+  description             = "API token used to authenticate requests to DataGrail."
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "api_key" {
+  secret_id = aws_secretsmanager_secret.api_key.id
+  secret_string = jsonencode({
+    "token" : var.datagrail_credentials
+  })
 }
