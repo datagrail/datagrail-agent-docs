@@ -1,9 +1,6 @@
 ############
 # Required #
 ############
-variable "region" {
-  type = string
-}
 
 variable "vpc_id" {
   description = "The ID of the VPC to place the agent into."
@@ -34,9 +31,14 @@ variable "agent_image_uri" {
   type        = string
 }
 
-variable "datagrail_credentials" {
+variable "datagrail_api_key" {
   description = "API token used to authenticate requests to DataGrail."
   type        = string
+}
+
+variable "integration_credentials_arns" {
+  description = "The ARNs of the integration credentials the agent should have permission to get."
+  type = list(string)
 }
 
 ############

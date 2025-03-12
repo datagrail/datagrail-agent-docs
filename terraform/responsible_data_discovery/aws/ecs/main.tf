@@ -1,13 +1,4 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.21.0"
-    }
-  }
-  required_version = ">= 1.5.0"
-}
-
+data "aws_region" "current" {}
 
 ################################################################################
 # Task Execution - IAM Role
@@ -26,7 +17,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name               = "ecsTaskExecutionRole"
+  name               = "${var.project_name}-ecs-task-exec-role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
@@ -55,13 +46,13 @@ data "aws_iam_policy_document" "agent_task_policy" {
       "secretsmanager:GetSecretValue"
     ]
 
-    resources = [aws_secretsmanager_secret.api_key.arn]
+    resources = concat([aws_secretsmanager_secret.api_key.arn], var.integration_credentials_arns)
 
   }
 }
 
 resource "aws_iam_policy" "agent_task" {
-  name   = "agent_task_policy"
+  name   = "${var.project_name}_task_policy"
   path   = "/"
   policy = data.aws_iam_policy_document.agent_task_policy.json
 }
@@ -113,7 +104,7 @@ resource "aws_ecs_task_definition" "datagrail_agent" {
         "logDriver" = "awslogs"
         "options" = {
           "awslogs-group"         = aws_cloudwatch_log_group.ecs_task_logger.name
-          "awslogs-region"        = var.region
+          "awslogs-region"        = data.aws_region.current.name
           "awslogs-stream-prefix" = "ecs"
         }
       },
@@ -194,6 +185,6 @@ resource "aws_secretsmanager_secret" "api_key" {
 resource "aws_secretsmanager_secret_version" "api_key" {
   secret_id = aws_secretsmanager_secret.api_key.id
   secret_string = jsonencode({
-    "token" : var.datagrail_credentials
+    "token" : var.datagrail_api_key
   })
 }
