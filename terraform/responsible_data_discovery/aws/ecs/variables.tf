@@ -39,6 +39,7 @@ variable "datagrail_api_key" {
 variable "integration_credentials_arns" {
   description = "The ARNs of the integration credentials the agent should have permission to get."
   type = list(string)
+  default = []
 }
 
 ############
