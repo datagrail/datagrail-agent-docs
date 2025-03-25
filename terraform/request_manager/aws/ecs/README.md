@@ -33,7 +33,7 @@ The DataGrail Agent will have a subdomain in an existing Route 53 hosted zone. I
 
 ### Configuration File
 
-The agent requires a configuration file. A sample of this configuration can be found in [config/rm-agent-config.json.sample](config/rm-agent-config.json.sample). Copy the contents into a file named `rm-agent-config.json` in the `config` directory and replace the `<SUBDOMAIN>` and `<BUCKET NAME>` placeholders.
+The agent requires a configuration file. A sample of this configuration can be found in [rm-agent-config.example.json](../rm-agent-config.example.json). Copy the contents into a file named `rm-agent-config.json` and replace the `bucket` and `customer_domain` placeholder values.
 
 ## Managed Resources
 
@@ -84,16 +84,16 @@ The agent requires the below variables to be declared in your `.tfvars` file. Th
 You can optionally overwrite the default variable values below by declaring them in your `.tfvars` file.
 
 | Name                         | Type           | Default                               | Description                                                                                                                                                     |
-|------------------------------|----------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `project_name`               | `string`       | `datagrail-rm-agent`                     | The name of the project. The value will be prepended to resource names.                                                                                         |
+| ---------------------------- | -------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `project_name`               | `string`       | `datagrail-rm-agent`                  | The name of the project. The value will be prepended to resource names.                                                                                         |
 | `create_vpc_endpoints`       | `bool`         | `true`                                | Determines whether VPC Endpoints for ECR, S3, Cloudwatch, and optionally Secrets Manager, should be created.                                                    |
 | `desired_task_count`         | `number`       | `1`                                   | The desired number of tasks in the ECS service. If count is >1, you must use an external Redis Queue.                                                           |
 | `cloudwatch_log_retention`   | `number`       | `30`                                  | The retention period (in days) of the agent's CloudWatch log group.                                                                                             |
 | `load_balancer_ingress_cidr` | `list(string)` | `[]`                                  | Additional CIDR block(s) to add to the Application Load Balancer's inbound rules. By default, only DataGrail's IP address can reach the ALB.                    |
 | `service_egress_cidr`        | `list(string)` | `[]`                                  | Additional CIDR block(s) to add to the agent service outbound rules. By default, the only traffic allowed out of the service will be to DataGrail's IP address. |
 | `load_balancer_ssl_policy`   | `string`       | `ELBSecurityPolicy-TLS13-1-2-2021-06` | The name of the SSL policy for the load balancer's listener.                                                                                                    |
-| `cluster_id`                 | `string`       | `None`                                | The ID of an existing cluster to place the datagrail-rm-agent into. If omitted, a cluster named `datagrail-rm-agent-cluster` will be created.                         |
+| `cluster_id`                 | `string`       | `None`                                | The ID of an existing cluster to place the datagrail-rm-agent into. If omitted, a cluster named `datagrail-rm-agent-cluster` will be created.                   |
 | `agent_container_cpu`        | `number`       | `1024`                                | The CPU allotted for the agent container.                                                                                                                       |
 | `agent_container_memory`     | `number`       | `2048`                                | The memory allotted for the agent container.                                                                                                                    |
-| `agent_subdomain`            | `string`       | `datagrail-rm-agent`                     | The subdomain to create the agent at.                                                                                                                           |
+| `agent_subdomain`            | `string`       | `datagrail-rm-agent`                  | The subdomain to create the agent at.                                                                                                                           |
 | `tags`                       | `map(string)`  | `{}`                                  | Default tags to add to resources that support them.                                                                                                             |
