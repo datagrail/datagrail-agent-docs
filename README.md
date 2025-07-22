@@ -32,12 +32,12 @@ Network ingress to the Agent is secured with OAuth, TLS, and well-defined traffi
 
 ## Flexible Connectors
 
-Communicate with internal systems (databases, data warehouses, APIs, etc.) using one of the many pre-built [connectors](/connectors), or extend our base components to encompass any needs specific to your organization.
+Communicate with internal systems (databases, data warehouses, APIs, etc.) using one of the many pre-built [connectors](https://docs.datagrail.io/docs/integrations/internal-systems-integrations/request-manager-agent/configuration/connections/setup), or extend our base components to encompass any needs specific to your organization.
 
 Internal systems change over time and it's easy to update the Agent to encompass new systems to include in DSR processing automation. 
 
 
 ## Quickstart
-* **[Learn how to configure the Agent](/CONFIGURATION.md)**
-* **[Use Terraform to deploy the Agent in AWS ECS](/terraform/request_manager/aws/ecs)**
-* **[Use Terraform to deploy the Agent in GCP Cloud Run](/terraform/request_manager/gcp/cloud_run)**
+* **[Learn how to configure the Agent](https://docs.datagrail.io/docs/integrations/internal-systems-integrations/request-manager-agent/configuration/environment-variables)**
+* **[Use Terraform to deploy the Agent in AWS ECS](https://docs.datagrail.io/docs/integrations/internal-systems-integrations/request-manager-agent/deployment-guides/aws-ecs-setup-guide)**
+* **[Use Terraform to deploy the Agent in GCP Cloud Run](https://docs.datagrail.io/docs/integrations/internal-systems-integrations/request-manager-agent/deployment-guides/gcp-cloudrun-setup-guide)**
